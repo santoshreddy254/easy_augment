@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/santoshreddy254/Data_Augmentor_With_GUI.svg?branch=master)](https://travis-ci.org/santoshreddy254/Data_Augmentor_With_GUI)
+
 ### Aim 
 To develop a Graphical user interface for generating artifically augmented data used for
 training deep learning models.
