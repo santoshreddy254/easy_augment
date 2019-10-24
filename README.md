@@ -1,5 +1,9 @@
 [![Build Status](https://travis-ci.org/santoshreddy254/Data_Augmentor_With_GUI.svg?branch=master)](https://travis-ci.org/santoshreddy254/Data_Augmentor_With_GUI)
 
+
+### Tasks 
+1) Create GUI to run artificial image genearator
+2) Change segmenting code in cpp to python
 ### Aim 
 To develop a Graphical user interface for generating artifically augmented data used for
 training deep learning models.
