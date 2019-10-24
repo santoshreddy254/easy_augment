@@ -1,0 +1,6 @@
+* https://github.com/zeromq -refer for documenting style
+* use proper code style
+* SDLC - agile/waterfall ?
+* How will we test the developed software - select testing framework, setup, atleast run one test case
+* TYPOra for software requirement specification
+* Template to write a good readme.md file
