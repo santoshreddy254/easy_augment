@@ -1,4 +1,4 @@
-\textbf{Aim} : To develop a Graphical user interface for generating artifically augmented data used for
+Aim : To develop a Graphical user interface for generating artifically augmented data used for
 training deep learning models.
 Users : b-it bots @work lab - HBRS
 Requirements :
