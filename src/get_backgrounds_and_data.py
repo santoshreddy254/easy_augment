@@ -112,6 +112,7 @@ def read_image_labels(object_files_dict):
                 for data in data_list:
                     img = cv2.imread(data[0])
                     # img = img + np.round(np.random.random(img.shape))
+                    print(data[0])
                     img = img + np.random.randint(-15, 15, size=img.shape,
                                                   dtype=np.int8)
                     img = np.clip(img, 0, 255)

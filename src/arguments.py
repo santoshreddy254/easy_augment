@@ -59,13 +59,13 @@ parser.add_argument('--image_dimension', default=[480, 640], type=list, required
 parser.add_argument('--num_scales', default='randomize', type=str, required=False,
                     help='Number of scales including original object scale.')
 
-parser.add_argument('--backgrounds_path', default=None, type=str, required=False,
+parser.add_argument('--backgrounds_path', default='./backgrounds/', type=str, required=False,
                     help='Path to directory where the background images are located.')
 
-parser.add_argument('image_path', type=str,
+parser.add_argument('image_path', default='./images/',type=str,
                     help='Path to directory where real images are located.')
 
-parser.add_argument('label_path', type=str,
+parser.add_argument('label_path', default = './semantic_labels/',type=str,
                     help='Path to directory where labels are located.')
 
 parser.add_argument('--src_image_path', default=None, type=str, required=False,
@@ -77,7 +77,7 @@ parser.add_argument('--src_label_path', default=None, type=str, required=False,
 parser.add_argument('--obj_det_label_path', default=None, type=str, required=False,
                     help='Path to directory where the object detection csv labels are located.')
 
-parser.add_argument('--real_img_type', default='.jpg', type=str, required=False,
+parser.add_argument('--real_img_type', default='.png', type=str, required=False,
                     help='The format of the real image.')
 
 parser.add_argument('--min_obj_area', default=20, type=int, required=False,
@@ -101,10 +101,10 @@ parser.add_argument('--save_overlay', default=False, type=bool, required=False,
 parser.add_argument('--overlay_opacity', default=0.6, type=float, required=False,
                     help='Opacity of label on the overlaid image.')
 
-parser.add_argument('--image_save_path', default=None, type=str, required=False,
+parser.add_argument('--image_save_path', default='./augmented/images/', type=str, required=False,
                     help='Path where the generated artificial image needs to be saved.')
 
-parser.add_argument('--label_save_path', default=None, type=str, required=False,
+parser.add_argument('--label_save_path', default='./augmented/labels/', type=str, required=False,
                     help='Path where the generated segmentation label needs to be saved.')
 
 parser.add_argument('--preview_save_path', default=None, type=str, required=False,
@@ -128,7 +128,7 @@ parser.add_argument('--name_format', default='%05d', type=str, required=False,
 parser.add_argument('--remove_clutter', default=True, type=bool, required=False,
                     help='Remove images cluttered with objects.')
 
-parser.add_argument('--num_images', default=20, type=int, required=False,
+parser.add_argument('--num_images', type=int, required=False,
                     help='Number of artificial images to generate.')
 
 parser.add_argument('--max_objects', default=10, type=int, required=False,
@@ -216,9 +216,10 @@ class GeneratorOptions(
 
     __slots__ = ()
 
-    def __new__(cls):
+    def __init__():
+		
 
-        return super(GeneratorOptions, cls).__new__(
+        return (
             cls, args.mode, args.image_dimension, args.num_scales, args.backgrounds_path,
             args.image_path, args.label_path, args.src_image_path, args.src_label_path,
             args.obj_det_label_path, args.real_img_type, args.min_obj_area, args.max_obj_area,
@@ -227,6 +228,8 @@ class GeneratorOptions(
             args.obj_det_save_path, args.mask_save_path, args.overlay_save_path, args.start_index,
             args.name_format, args.remove_clutter, args.num_images, args.max_objects, args.num_regenerate,
             args.min_distance, args.max_occupied_area)
+    def change_num_images(self,num_images):
+        args.num_images = num_images
 
 
 generator_options = GeneratorOptions()

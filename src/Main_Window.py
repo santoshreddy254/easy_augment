@@ -4,18 +4,20 @@ from PyQt5.QtCore import Qt
 from PyQt5 import QtGui
 from shutil import copy
 import os
+import AIG_Window
 
 # Subclass QMainWindow to customise your application's main window
 class MainWindow(QMainWindow):
 
     def __init__(self, *args, **kwargs):
-        super(MainWindow, self).__init__(*args, **kwargs)
+        super().__init__()
 
         self.setWindowTitle("b-it-bots -- Data Augmentor")
         self.setGeometry(100,100,550,300)
         self.home()
         self.show()
     def home(self):
+
         button1 = QPushButton("Add images",self)
         button1.clicked.connect(self.browse_image_files)
         button1.resize(150,20)
@@ -27,16 +29,18 @@ class MainWindow(QMainWindow):
         button2.move(200,150)
 
         button3 = QPushButton("Start augmenting",self)
-        button3.clicked.connect(self.close_application)
+        button3.clicked.connect(self.augment_data)
         button3.resize(150,20)
         button3.move(200,200)
-
-
 
     def close_application(self):
         print("Thank you")
         sys.exit()
 
+    def augment_data(self):
+        self.agi_window = AIG_Window.MainWindow()
+        self.agi_window.show()
+        self.hide()
     def browse_image_files(self):
         os.chdir("..")
         destination = os.getcwd() + '/images'
@@ -58,22 +62,13 @@ class MainWindow(QMainWindow):
             copy(f_name,destination)
             # self.open_progress_bar(val*i)
 
-    # def open_progress_bar(self,num):
-    #     my_progress_bar = QDialog(self)
-    #     my_progress_bar.setWindowTitle("Copying")
-    #     progress = QProgressBar(self)
-    #     progress.setGeometry(0, 0, 300, 25)
-    #     my_progress_bar.setGeometry(100,100,550,300)
-    #     progress.setValue(num)
-    #     my_progress_bar.show()
 
 
 
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-
-    window = MainWindow()
-    window.show()
-
-    app.exec_()
+# if __name__ == "__main__":
+#     app = QApplication(sys.argv)
+#     window = MainWindow()
+#     window.show()
+#
+#     app.exec_()
