@@ -42,7 +42,7 @@ class MainWindow(QMainWindow):                           # <===
         return self.num_images.text()
     def ok_button(self):
         generator_options = GeneratorOptions()
-        generator_options.change_num_images(self.num_images.text())
+        generator_options.set_num_images(int(self.num_images.text()))
         print("insise ok button")
         print(self.num_images.text())
         perform_augmentation()
