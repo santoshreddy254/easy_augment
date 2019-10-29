@@ -7,7 +7,7 @@
 ### Aim 
 To develop a Graphical user interface for generating artifically augmented data used for
 training deep learning models.
-### Users
+### Stack holders
 b-it bots @work lab - HBRS
 ### Requirements 
 1) Build a pipeline to artificial generate annotated data for training deep learning models.
@@ -20,3 +20,6 @@ generate semantic labels of the captured image and then generate the artificial 
 ### Delivarables
 1) At the end of SDP course, expected to deliver working software as per the above mentioned
 requirements.
+
+
+
