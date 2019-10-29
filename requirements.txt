@@ -4,3 +4,5 @@ opencv-python
 tqdm
 joblib
 scipy
+matplotlib
+numpy
