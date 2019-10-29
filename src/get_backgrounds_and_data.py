@@ -65,7 +65,7 @@ def fetch_image_gt_paths():
                     files_counter += 1
                     obj_files.append([os.path.join(
                                 generator_options.image_path, item,
-                                files.split('.')[0] + generator_options.real_img_type),
+                                files.split('.')[0] + generator_options.get_image_type()),
                                 os.path.join(generator_options.label_path, item, files)])
 
                     object_files_dict[item] = obj_files.copy()
@@ -76,7 +76,7 @@ def fetch_image_gt_paths():
                     object_files_dict[cls_name] = list()
                 object_files_dict[cls_name].append([os.path.join(
                         generator_options.image_path,
-                        item.split('.')[0] + generator_options.real_img_type),
+                        item.split('.')[0] + generator_options.get_image_type()),
                         os.path.join(generator_options.label_path, item)])
 
         return files_counter, object_files_dict
@@ -86,7 +86,7 @@ def fetch_image_gt_paths():
         for label_files in sorted(os.listdir(generator_options.label_path)):
             img_path = os.path.join(generator_options.image_path,
                                     label_files.split('.')[0] +
-                                    generator_options.real_img_type)
+                                    generator_options.get_image_type())
             label_path = os.path.join(generator_options.label_path,
                                       label_files)
             data_paths.append([img_path, label_path])

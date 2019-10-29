@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Name=b-it-bots-AIG
+Comment=b-it-bots data augmentor with GUI
+Exec=/home/santosh/MAS/SDP/Data_Augmentor_With_GUI/src/artificial_image_generator.sh
+Icon=/home/santosh/MAS/SDP/Data_Augmentor_With_GUI/src/b-it-bots.jpg
+Path=/home/santosh/MAS/SDP/Data_Augmentor_With_GUI/src/
+Terminal=true
+Type=Application
+Categories=Utility;
+

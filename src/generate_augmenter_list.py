@@ -92,7 +92,7 @@ def create_augmenter_list(objects_list, is_regeneration=False, removed_elements=
 
     for i in range(num_images):
         num_objects_to_place = np.random.randint(1,
-                                                 high=generator_options.max_objects)
+                                                 high=generator_options.get_max_objects())
         what_objects = [objects_index[i] for i in range(num_objects_to_place)]
 
         if i % len(background_images) == 0:

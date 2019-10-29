@@ -132,3 +132,4 @@ def perform_augmentation():
                                for index, element in enumerate(tqdm.tqdm(
                                                     augmenter_list,
                                                     desc='Generating artificial images')))
+    return True

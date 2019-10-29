@@ -91,10 +91,10 @@ parser.add_argument('--num_scales', default='randomize', type=str, required=Fals
 parser.add_argument('--backgrounds_path', default='./backgrounds/', type=str, required=False,
                     help='Path to directory where the background images are located.')
 
-parser.add_argument('image_path', default='./images/',type=str,
+parser.add_argument('--image_path', default='./images/',type=str,
                     help='Path to directory where real images are located.')
 
-parser.add_argument('label_path', default = './semantic_labels/',type=str,
+parser.add_argument('--label_path', default = './semantic_labels/',type=str,
                     help='Path to directory where labels are located.')
 
 parser.add_argument('--src_image_path', default=None, type=str, required=False,
@@ -218,7 +218,6 @@ class GeneratorOptions(
             'src_image_path',
             'src_label_path',
             'obj_det_label_path',
-            'real_img_type',
             'min_obj_area',
             'max_obj_area',
             'save_label_preview',
@@ -235,7 +234,6 @@ class GeneratorOptions(
             'start_index',
             'name_format',
             'remove_clutter',
-            'max_objects',
             'num_regenerate',
             'min_distance',
             'max_occupied_area',
@@ -249,16 +247,24 @@ class GeneratorOptions(
         return super(GeneratorOptions, cls).__new__(
             cls, args.mode, args.image_dimension, args.num_scales, args.backgrounds_path,
             args.image_path, args.label_path, args.src_image_path, args.src_label_path,
-            args.obj_det_label_path, args.real_img_type, args.min_obj_area, args.max_obj_area,
+            args.obj_det_label_path, args.min_obj_area, args.max_obj_area,
             args.save_label_preview, args.save_obj_det_label, args.save_mask, args.save_overlay,
             args.overlay_opacity, args.image_save_path, args.label_save_path, args.preview_save_path,
             args.obj_det_save_path, args.mask_save_path, args.overlay_save_path, args.start_index,
-            args.name_format, args.remove_clutter, args.max_objects, args.num_regenerate,
+            args.name_format, args.remove_clutter, args.num_regenerate,
             args.min_distance, args.max_occupied_area)
     def set_num_images(self,num_images):
         args.num_images = num_images
     def get_num_images(self):
         return args.num_images
+    def set_image_type(self,image_type):
+        args.real_img_type = image_type
+    def get_image_type(self):
+        return args.real_img_type
+    def set_max_objects(self,max_objects=3):
+        args.max_objects = max_objects
+    def get_max_objects(self):
+        return args.max_objects
 
 
 
