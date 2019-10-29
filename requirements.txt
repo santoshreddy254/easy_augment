@@ -6,3 +6,5 @@ joblib
 scipy
 matplotlib
 numpy
+pascal-voc-tools
+pascal-voc-writer
