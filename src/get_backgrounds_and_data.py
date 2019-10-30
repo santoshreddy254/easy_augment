@@ -57,16 +57,16 @@ def fetch_image_gt_paths():
         object_files_dict = dict()
         files_counter = 0
 
-        for item in os.listdir(generator_options.label_path):
-            cls_path = os.path.join(generator_options.label_path, item)
+        for item in os.listdir(generator_options.get_label_path()):
+            cls_path = os.path.join(generator_options.get_label_path(), item)
             if os.path.isdir(cls_path):
                 obj_files = list()
                 for files in sorted(os.listdir(cls_path)):
                     files_counter += 1
                     obj_files.append([os.path.join(
-                                generator_options.image_path, item,
+                                generator_options.get_image_path(), item,
                                 files.split('.')[0] + generator_options.get_image_type()),
-                                os.path.join(generator_options.label_path, item, files)])
+                                os.path.join(generator_options.get_label_path(), item, files)])
 
                     object_files_dict[item] = obj_files.copy()
             else:
@@ -75,19 +75,19 @@ def fetch_image_gt_paths():
                 if object_files_dict.get(cls_name, None) is None:
                     object_files_dict[cls_name] = list()
                 object_files_dict[cls_name].append([os.path.join(
-                        generator_options.image_path,
+                        generator_options.get_image_path(),
                         item.split('.')[0] + generator_options.get_image_type()),
-                        os.path.join(generator_options.label_path, item)])
+                        os.path.join(generator_options.get_label_path(), item)])
 
         return files_counter, object_files_dict
 
     else:
         data_paths = []
-        for label_files in sorted(os.listdir(generator_options.label_path)):
-            img_path = os.path.join(generator_options.image_path,
+        for label_files in sorted(os.listdir(generator_options.get_label_path())):
+            img_path = os.path.join(generator_options.get_image_path(),
                                     label_files.split('.')[0] +
                                     generator_options.get_image_type())
-            label_path = os.path.join(generator_options.label_path,
+            label_path = os.path.join(generator_options.get_label_path(),
                                       label_files)
             data_paths.append([img_path, label_path])
 

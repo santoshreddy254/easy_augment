@@ -1,5 +1,5 @@
-# import sys
-# sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
+import sys
+sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
 from arguments import generator_options
 from generate_artificial_images import perform_augmentation
 from visualizer import save_visuals

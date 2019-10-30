@@ -86,7 +86,6 @@ def create_augmenter_list(objects_list, is_regeneration=False, removed_elements=
         regenerate_count = regenerate_count
     else:
         augmenter_list = []
-        print("inside gal : num images ",generator_options.get_num_images())
         num_images = generator_options.get_num_images()
         regenerate_count = 0
 

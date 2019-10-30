@@ -91,7 +91,7 @@ parser.add_argument('--num_scales', default='randomize', type=str, required=Fals
 parser.add_argument('--backgrounds_path', default='./backgrounds/', type=str, required=False,
                     help='Path to directory where the background images are located.')
 
-parser.add_argument('--image_path', default='./images/',type=str,
+parser.add_argument('--image_path',type=str,
                     help='Path to directory where real images are located.')
 
 parser.add_argument('--label_path', default = './semantic_labels/',type=str,
@@ -213,8 +213,6 @@ class GeneratorOptions(
             'image_dimension',
             'num_scales',
             'backgrounds_path',
-            'image_path',
-            'label_path',
             'src_image_path',
             'src_label_path',
             'obj_det_label_path',
@@ -245,8 +243,7 @@ class GeneratorOptions(
     def __new__(cls):
 
         return super(GeneratorOptions, cls).__new__(
-            cls, args.mode, args.image_dimension, args.num_scales, args.backgrounds_path,
-            args.image_path, args.label_path, args.src_image_path, args.src_label_path,
+            cls, args.mode, args.image_dimension, args.num_scales, args.backgrounds_path, args.src_image_path, args.src_label_path,
             args.obj_det_label_path, args.min_obj_area, args.max_obj_area,
             args.save_label_preview, args.save_obj_det_label, args.save_mask, args.save_overlay,
             args.overlay_opacity, args.image_save_path, args.label_save_path, args.preview_save_path,
@@ -265,6 +262,14 @@ class GeneratorOptions(
         args.max_objects = max_objects
     def get_max_objects(self):
         return args.max_objects
+    def set_image_path(self,image_path):
+        args.image_path = image_path
+    def get_image_path(self):
+        return args.image_path
+    def set_label_path(self,label_path):
+        args.label_path = label_path
+    def get_label_path(self):
+        return args.label_path
 
 
 
