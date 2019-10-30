@@ -212,7 +212,6 @@ class GeneratorOptions(
             'mode',
             'image_dimension',
             'num_scales',
-            'backgrounds_path',
             'src_image_path',
             'src_label_path',
             'obj_det_label_path',
@@ -243,7 +242,7 @@ class GeneratorOptions(
     def __new__(cls):
 
         return super(GeneratorOptions, cls).__new__(
-            cls, args.mode, args.image_dimension, args.num_scales, args.backgrounds_path, args.src_image_path, args.src_label_path,
+            cls, args.mode, args.image_dimension, args.num_scales, args.src_image_path, args.src_label_path,
             args.obj_det_label_path, args.min_obj_area, args.max_obj_area,
             args.save_label_preview, args.save_obj_det_label, args.save_mask, args.save_overlay,
             args.overlay_opacity, args.image_save_path, args.label_save_path, args.preview_save_path,
@@ -270,6 +269,10 @@ class GeneratorOptions(
         args.label_path = label_path
     def get_label_path(self):
         return args.label_path
+    def get_backgrounds_path(self):
+        return args.backgrounds_path
+    def set_backgrounds_path(Self,backgrouds_path):
+        args.backgrouds_path = backgrouds_path
 
 
 

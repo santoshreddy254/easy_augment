@@ -75,6 +75,19 @@ class MainWindow(QMainWindow):                           # <===
         self.button3.move(520,220)
         self.button3.resize(100,40)
 
+        self.nameLabel_backgrounds_folder = QLabel(self)
+        self.nameLabel_backgrounds_folder.setText('Backgrounds folder path:')
+        self.nameLabel_backgrounds_folder.move(50, 270)
+        self.nameLabel_backgrounds_folder.resize(200,40)
+        self.backgrounds_folder = QLineEdit(self)
+        self.backgrounds_folder.setText('./backgrounds')
+        self.backgrounds_folder.move(300, 270)
+        self.backgrounds_folder.resize(200,40)
+        self.button3 = QPushButton("Change",self)
+        self.button3.clicked.connect(self.change_backgrounds_folder)
+        self.button3.move(520,270)
+        self.button3.resize(100,40)
+
         self.button1 = QPushButton("Ok",self)
         self.button1.clicked.connect(self.ok_button)
         self.button1.resize(150,20)
@@ -92,9 +105,16 @@ class MainWindow(QMainWindow):                           # <===
         folderpath_dlg.setFileMode(QFileDialog.Directory)
         folderpath = folderpath_dlg.getExistingDirectory()
         self.label_folder.setText(folderpath)
+    def change_backgrounds_folder(self):
+        folderpath_dlg = QFileDialog()
+        folderpath_dlg.setFileMode(QFileDialog.Directory)
+        folderpath = folderpath_dlg.getExistingDirectory()
+        self.backgrounds_folder.setText(folderpath)
     def button_status(self):
         if len(self.num_images.text())>0:
             self.button1.setEnabled(True)
+        else :
+            self.button1.setEnabled(False)
     def ok_button(self):
         generator_options = GeneratorOptions()
         generator_options.set_num_images(int(self.num_images.text()))
@@ -102,6 +122,7 @@ class MainWindow(QMainWindow):                           # <===
         generator_options.set_max_objects(int(self.max_objects.text()))
         generator_options.set_image_path(self.image_folder.text())
         generator_options.set_label_path(self.label_folder.text())
+        generator_options.set_backgrounds_path(self.backgrounds_folder.text())
         flag = perform_augmentation()
         if flag:
             self.progress_bar_obj = progress_bar.MainWindow()

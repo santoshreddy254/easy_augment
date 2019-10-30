@@ -14,7 +14,7 @@ def fetch_background_images():
             The background is then resized.
     """
 
-    backgrounds_path = generator_options.backgrounds_path
+    backgrounds_path = generator_options.get_backgrounds_path()
     background_files = os.listdir(backgrounds_path)
     background_files = [os.path.join(backgrounds_path, file)
                         for file in background_files]
