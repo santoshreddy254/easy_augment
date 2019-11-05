@@ -5,7 +5,7 @@ import random
 from scipy.spatial.distance import cdist
 
 
-def remove_clutter(objects_list, augmenter_list, regenerate_count):
+def remove_clutter(objects_list, augmenter_list, regenerate_count, image_dimension):
     """
     This function removes elements from the augmenter list which have
     objects occupy an area in image space larger than "max_occupied_area"
@@ -28,7 +28,7 @@ def remove_clutter(objects_list, augmenter_list, regenerate_count):
         dist_btw_locations = cdist(vector['locations'], vector['locations'])
         np.fill_diagonal(dist_btw_locations, np.inf)
 
-        if (vector_area > np.product(generator_options.image_dimension)
+        if (vector_area > np.product(generator_options.get_image_dimension())
                 * generator_options.max_occupied_area or
                 np.any(dist_btw_locations < generator_options.min_distance)):
             del augmenter_list[index]
@@ -37,25 +37,25 @@ def remove_clutter(objects_list, augmenter_list, regenerate_count):
     if (regenerate_count < generator_options.num_regenerate
             and removed_vectors is not 0):
         regenerate_count += 1
-        create_augmenter_list(objects_list, is_regeneration=True,
+        create_augmenter_list(objects_list,image_dimension, is_regeneration=True,
                               removed_elements=removed_vectors,
                               regenerate_count=regenerate_count,
                               augmenter_list=augmenter_list)
 
 
-def get_random_locations(num_random_locations):
+def get_random_locations(num_random_locations,image_dimension):
     """
     :param num_random_locations: Number of random locations in pixel space.
     :return: A list of random (x,y) locations in pixel space.
     """
 
-    location = [[random.randrange(0, 440, 120), random.randrange(0, 600, 120)]
+    location = [[random.randrange(0, image_dimension[0], 120), random.randrange(0, image_dimension[1], 120)]
                 for _ in range(num_random_locations)]
-
+    # print("inside random locations ,",location)
     return np.array(location)
 
 
-def create_augmenter_list(objects_list, is_regeneration=False, removed_elements=None,
+def create_augmenter_list(objects_list,image_dimension, is_regeneration=False, removed_elements=None,
                           regenerate_count=None, augmenter_list=None):
     """
     :param objects_list: List containing details of all objects.
@@ -103,10 +103,10 @@ def create_augmenter_list(objects_list, is_regeneration=False, removed_elements=
             i % len(background_images)],
                                     'num_objects_to_place': num_objects_to_place,
                                     'what_objects': what_objects,
-                                    'locations': get_random_locations(num_objects_to_place)})
+                                    'locations': get_random_locations(num_objects_to_place,image_dimension)})
 
     if generator_options.remove_clutter:
         remove_clutter(objects_list, augmenter_list,
-                       regenerate_count)
+                       regenerate_count,image_dimension)
 
     return augmenter_list

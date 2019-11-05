@@ -22,13 +22,13 @@ def fetch_background_images():
     background_imgs = list()
     for file in background_files:
         img = cv2.imread(file)
-        if list(img.shape[0:2]) != generator_options.image_dimension:
+        if list(img.shape[0:2]) != generator_options.get_image_dimension():
             logging.warning('Background dimension {} not expected'.format(
                         img.shape))
             logging.warning('Rescaling background to shape: {}'.format(
-                tuple(generator_options.image_dimension + [3])))
+                tuple(generator_options.get_image_dimension() + [3])))
             img = cv2.resize(img, tuple(reversed(
-                        generator_options.image_dimension)))
+                        generator_options.get_image_dimension())))
 
         background_imgs.append(img)
 
@@ -112,7 +112,6 @@ def read_image_labels(object_files_dict):
                 for data in data_list:
                     img = cv2.imread(data[0])
                     # img = img + np.round(np.random.random(img.shape))
-                    print(data[0])
                     img = img + np.random.randint(-15, 15, size=img.shape,
                                                   dtype=np.int8)
                     img = np.clip(img, 0, 255)

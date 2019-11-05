@@ -17,8 +17,8 @@ def get_locations_in_image(obj_locations):
     """
     locs_within_image = []
     for index, location in enumerate(obj_locations):
-        if (0 <= location[0] <= generator_options.image_dimension[0]
-                and 0 <= location[1] <= generator_options.image_dimension[1]):
+        if (0 <= location[0] <= generator_options.get_image_dimension()[0]
+                and 0 <= location[1] <= generator_options.get_image_dimension()[1]):
             locs_within_image.append(location)
 
     return np.array(locs_within_image)
@@ -41,21 +41,21 @@ def get_augmented_image(original_image, original_label,
     augmented_image = original_image.copy()
     augmented_label = original_label.copy()
     obj_details_to_augment = copy.deepcopy(obj_details)
-
     min_loc_index = np.argmin(np.sum(
         obj_details_to_augment['obj_loc'], axis=1))
     obj_details_to_augment['obj_loc'] -= (obj_details_to_augment['obj_loc'][
                                           min_loc_index, :] - location)
 
     for index, loc in enumerate(obj_details_to_augment['obj_loc']):
-        if (0 < loc[0] < generator_options.image_dimension[0]
-                and 0 < loc[1] < generator_options.image_dimension[1]):
+        # print(loc[0], generator_options.get_image_dimension()[0])
+        if (0 < loc[0] < augmented_image.shape[0]
+                and 0 < loc[1] < augmented_image.shape[1]):
             augmented_image[tuple(loc)] = obj_details_to_augment[
                                     'obj_vals'][index]
             augmented_label[tuple(loc)] = obj_details_to_augment[
                                     'label_vals'][index]
 
-    if generator_options.save_obj_det_label:
+    if generator_options.get_save_obj_det_label():
         obj_locations = get_locations_in_image(
                                 obj_details_to_augment['obj_loc'])
         rect_points = [min(obj_locations[:, 1]), min(obj_locations[:, 0]),
@@ -88,8 +88,7 @@ def worker(objects_list, index, element, obj_det_label, background_label):
                               key=lambda k: k['obj_area'],
                               reverse=True)
     for i in range(element['num_objects_to_place']):
-
-        if generator_options.save_obj_det_label:
+        if generator_options.get_save_obj_det_label():
             artificial_image, semantic_label, rect_label = (
                 get_augmented_image(artificial_image,
                                     semantic_label,
@@ -102,7 +101,6 @@ def worker(objects_list, index, element, obj_det_label, background_label):
                                     semantic_label,
                                     obj_details_list[i],
                                     element['locations'][i]))
-
     save_data(artificial_image, semantic_label, obj_det_label, index)
 
 
@@ -120,10 +118,10 @@ def perform_augmentation():
 
     make_save_dirs()
     objects_list = get_scaled_objects()
-    augmenter_list = create_augmenter_list(objects_list)
+    augmenter_list = create_augmenter_list(objects_list,generator_options.get_image_dimension())
     obj_det_label = list()
     background_label = np.ones(tuple(
-        generator_options.image_dimension)) * (
+        generator_options.get_image_dimension())) * (
         CLASS_TO_LABEL['background'])
 
     num_cores = multiprocessing.cpu_count()

@@ -10,12 +10,13 @@ import main
 from generate_artificial_images import perform_augmentation
 from arguments import *
 import progress_bar
+import image_resize
 
 class MainWindow(QMainWindow):                           # <===
     def __init__(self):
         super().__init__()
         self.setWindowTitle("b-it-bots -- Data Augmentor")
-        self.setGeometry(100,100,650,500)
+        self.setGeometry(100,100,650,700)
         self.aig_form()
     def aig_form(self):
         self.nameLabel_num_images = QLabel(self)
@@ -88,12 +89,63 @@ class MainWindow(QMainWindow):                           # <===
         self.button3.move(520,270)
         self.button3.resize(100,40)
 
+        self.nameLabel_image_dimension = QLabel(self)
+        self.nameLabel_image_dimension.setText('Output image dimension:')
+        self.nameLabel_image_dimension.move(50, 320)
+        self.nameLabel_image_dimension.resize(200,40)
+        self.image_dimension2 = QLineEdit(self)
+        self.image_dimension2.setText('640')
+        self.image_dimension2.move(300, 320)
+        self.image_dimension2.resize(90,40)
+        self.image_dimension1 = QLineEdit(self)
+        self.image_dimension1.setText('480')
+        self.image_dimension1.move(400, 320)
+        self.image_dimension1.resize(90,40)
+        self.onlyInt = QIntValidator()
+        self.image_dimension1.setValidator(self.onlyInt)
+        self.image_dimension2.setValidator(self.onlyInt)
+
+        self.nameLabel_save_obj_det_label = QLabel(self)
+        self.nameLabel_save_obj_det_label.setText('Save object detection label:')
+        self.nameLabel_save_obj_det_label.move(50, 370)
+        self.nameLabel_save_obj_det_label.resize(200,40)
+        self.rbutton1 = QRadioButton("True",self)
+        self.rbutton1.move(300,370)
+        self.rbutton2 = QRadioButton("False",self)
+        self.rbutton2.setChecked(True)
+        self.rbutton2.move(400,370)
+        self.rbutton1.toggled.connect(self.button_status)
+        # if self.rbutton1.isChecked():
+        #     self.label_flag = True
+        # elif self.rbutton2.isChecked():
+        self.label_flag = False
+
+        self.nameLabel_save_obj_det_label_path = QLabel(self)
+        self.nameLabel_save_obj_det_label_path.setText('Backgrounds folder path:')
+        self.nameLabel_save_obj_det_label_path.move(50, 420)
+        self.nameLabel_save_obj_det_label_path.resize(200,40)
+        self.save_obj_det_label_path = QLineEdit(self)
+        self.save_obj_det_label_path.setText('./augmented/obj_det_labels')
+        self.save_obj_det_label_path.move(300, 420)
+        self.save_obj_det_label_path.resize(200,40)
+        self.button4 = QPushButton("Change",self)
+        self.button4.setEnabled(False)
+        self.button4.clicked.connect(self.change_save_obj_det_label_path_folder)
+        self.button4.move(520,420)
+        self.button4.resize(100,40)
+
         self.button1 = QPushButton("Ok",self)
         self.button1.clicked.connect(self.ok_button)
         self.button1.resize(150,20)
-        self.button1.move(200,450)
+        self.button1.move(200,600)
         self.button1.setEnabled(False)
         return self.num_images.text()
+
+    def change_save_obj_det_label_path_folder(self):
+        folderpath_dlg = QFileDialog()
+        folderpath_dlg.setFileMode(QFileDialog.Directory)
+        folderpath = folderpath_dlg.getExistingDirectory()
+        self.save_obj_det_label_path.setText(folderpath)
 
     def change_image_folder(self):
         folderpath_dlg = QFileDialog()
@@ -115,7 +167,15 @@ class MainWindow(QMainWindow):                           # <===
             self.button1.setEnabled(True)
         else :
             self.button1.setEnabled(False)
+        if self.rbutton1.isChecked():
+            self.button4.setEnabled(True)
+            self.label_flag = True
+        elif self.rbutton2.isChecked():
+            self.button4.setEnabled(False)
     def ok_button(self):
+        image_resize.resize_images(self.backgrounds_folder.text(),[int(self.image_dimension1.text()),int(self.image_dimension2.text())])
+        image_resize.resize_images(self.image_folder.text(),[int(self.image_dimension1.text()),int(self.image_dimension2.text())])
+        image_resize.resize_images(self.label_folder.text(),[int(self.image_dimension1.text()),int(self.image_dimension2.text())])
         generator_options = GeneratorOptions()
         generator_options.set_num_images(int(self.num_images.text()))
         generator_options.set_image_type(self.image_type.currentText())
@@ -123,6 +183,10 @@ class MainWindow(QMainWindow):                           # <===
         generator_options.set_image_path(self.image_folder.text())
         generator_options.set_label_path(self.label_folder.text())
         generator_options.set_backgrounds_path(self.backgrounds_folder.text())
+        generator_options.set_image_dimension([int(self.image_dimension1.text()),int(self.image_dimension2.text())])
+        generator_options.set_save_obj_det_label(self.label_flag)
+        generator_options.set_obj_det_save_path(self.save_obj_det_label_path.text())
+
         flag = perform_augmentation()
         if flag:
             self.progress_bar_obj = progress_bar.MainWindow()

@@ -1,6 +1,6 @@
 import argparse
 import collections
-
+import copy
 
 
 
@@ -94,7 +94,7 @@ parser.add_argument('--backgrounds_path', default='./backgrounds/', type=str, re
 parser.add_argument('--image_path',type=str,
                     help='Path to directory where real images are located.')
 
-parser.add_argument('--label_path', default = './semantic_labels/',type=str,
+parser.add_argument('--label_path',type=str,
                     help='Path to directory where labels are located.')
 
 parser.add_argument('--src_image_path', default=None, type=str, required=False,
@@ -103,7 +103,7 @@ parser.add_argument('--src_image_path', default=None, type=str, required=False,
 parser.add_argument('--src_label_path', default=None, type=str, required=False,
                     help='Path to directory where labels of images with multiple objects are located.')
 
-parser.add_argument('--obj_det_label_path', default=None, type=str, required=False,
+parser.add_argument('--obj_det_label_path', type=str, required=False,
                     help='Path to directory where the object detection csv labels are located.')
 
 parser.add_argument('--real_img_type', default='.png', type=str, required=False,
@@ -118,7 +118,7 @@ parser.add_argument('--max_obj_area', default=70, type=int, required=False,
 parser.add_argument('--save_label_preview', default=False, type=bool, required=False,
                     help='Save image+label in single image for preview.')
 
-parser.add_argument('--save_obj_det_label', default=False, type=bool, required=False,
+parser.add_argument('--save_obj_det_label', type=bool, required=False,
                     help='Save object detection labels in csv files.')
 
 parser.add_argument('--save_mask', default=False, type=bool, required=False,
@@ -208,71 +208,82 @@ if args.mode == 1:
 
 
 class GeneratorOptions(
-        collections.namedtuple('GeneratorOptions', [
-            'mode',
-            'image_dimension',
-            'num_scales',
-            'src_image_path',
-            'src_label_path',
-            'obj_det_label_path',
-            'min_obj_area',
-            'max_obj_area',
-            'save_label_preview',
-            'save_obj_det_label',
-            'save_mask',
-            'save_overlay',
-            'overlay_opacity',
-            'image_save_path',
-            'label_save_path',
-            'preview_save_path',
-            'obj_det_save_path',
-            'mask_save_path',
-            'overlay_save_path',
-            'start_index',
-            'name_format',
-            'remove_clutter',
-            'num_regenerate',
-            'min_distance',
-            'max_occupied_area',
-        ])):
-    """Immutable class to hold artificial image generation options."""
+	    collections.namedtuple('GeneratorOptions', [
+	        'mode',
+	        'num_scales',
+	        'src_image_path',
+	        'src_label_path',
+	        'min_obj_area',
+	        'max_obj_area',
+	        'save_label_preview',
+	        'save_mask',
+	        'save_overlay',
+	        'overlay_opacity',
+	        'image_save_path',
+	        'label_save_path',
+	        'preview_save_path',
+	        'mask_save_path',
+	        'overlay_save_path',
+	        'start_index',
+	        'name_format',
+	        'remove_clutter',
+	        'num_regenerate',
+	        'min_distance',
+	        'max_occupied_area',
+	    ])):
+	"""Immutable class to hold artificial image generation options."""
 
-    __slots__ = ()
+	__slots__ = ()
 
-    def __new__(cls):
+	def __new__(cls):
 
-        return super(GeneratorOptions, cls).__new__(
-            cls, args.mode, args.image_dimension, args.num_scales, args.src_image_path, args.src_label_path,
-            args.obj_det_label_path, args.min_obj_area, args.max_obj_area,
-            args.save_label_preview, args.save_obj_det_label, args.save_mask, args.save_overlay,
-            args.overlay_opacity, args.image_save_path, args.label_save_path, args.preview_save_path,
-            args.obj_det_save_path, args.mask_save_path, args.overlay_save_path, args.start_index,
-            args.name_format, args.remove_clutter, args.num_regenerate,
-            args.min_distance, args.max_occupied_area)
-    def set_num_images(self,num_images):
-        args.num_images = num_images
-    def get_num_images(self):
-        return args.num_images
-    def set_image_type(self,image_type):
-        args.real_img_type = image_type
-    def get_image_type(self):
-        return args.real_img_type
-    def set_max_objects(self,max_objects=3):
-        args.max_objects = max_objects
-    def get_max_objects(self):
-        return args.max_objects
-    def set_image_path(self,image_path):
-        args.image_path = image_path
-    def get_image_path(self):
-        return args.image_path
-    def set_label_path(self,label_path):
-        args.label_path = label_path
-    def get_label_path(self):
-        return args.label_path
-    def get_backgrounds_path(self):
-        return args.backgrounds_path
-    def set_backgrounds_path(Self,backgrouds_path):
-        args.backgrouds_path = backgrouds_path
+	    return super(GeneratorOptions, cls).__new__(
+	        cls, args.mode, args.num_scales, args.src_image_path, args.src_label_path, args.min_obj_area, args.max_obj_area,
+	        args.save_label_preview, args.save_mask, args.save_overlay,
+	        args.overlay_opacity, args.image_save_path, args.label_save_path, args.preview_save_path, args.mask_save_path, args.overlay_save_path, args.start_index,
+	        args.name_format, args.remove_clutter, args.num_regenerate,
+	        args.min_distance, args.max_occupied_area)
+	def set_num_images(self,num_images):
+	    args.num_images = num_images
+	def get_num_images(self):
+	    return args.num_images
+	def set_image_type(self,image_type):
+	    args.real_img_type = image_type
+	def get_image_type(self):
+	    return args.real_img_type
+	def set_max_objects(self,max_objects=3):
+	    args.max_objects = max_objects
+	def get_max_objects(self):
+	    return args.max_objects
+	def set_image_path(self,image_path):
+	    args.image_path = image_path
+	def get_image_path(self):
+	    return args.image_path
+	def set_label_path(self,label_path):
+	    args.label_path = label_path
+	def get_label_path(self):
+	    return args.label_path
+	def get_backgrounds_path(self):
+	    return args.backgrounds_path
+	def set_backgrounds_path(self,backgrouds_path):
+	    args.backgrouds_path = backgrouds_path
+	def set_image_dimension(self,image_dimension):
+		args.image_dimension = image_dimension
+	def get_image_dimension(self):
+		return args.image_dimension
+	def set_save_obj_det_label(self,save_flag):
+		# print("setter bool",save_flag)
+		args.save_obj_det_label = copy.deepcopy(save_flag)
+	def get_save_obj_det_label(self):
+		# print("getter bool ",args.save_obj_det_label)
+		return args.save_obj_det_label
+	def set_obj_det_save_path(self,obj_det_save_path):
+		# print("inside setter, ",obj_det_save_path)
+		args.obj_det_save_path = obj_det_save_path
+	def get_obj_det_save_path(self):
+		# print("inside path getter, ", args.obj_det_save_path)
+		return args.obj_det_save_path
+
 
 
 

@@ -20,9 +20,9 @@ def make_save_dirs():
         if not os.path.isdir(generator_options.label_save_path):
             os.makedirs(generator_options.label_save_path)
 
-    if generator_options.save_obj_det_label:
-        if not os.path.isdir(generator_options.obj_det_save_path):
-            os.makedirs(generator_options.obj_det_save_path)
+    if generator_options.get_obj_det_save_path():
+        if not os.path.isdir(generator_options.get_obj_det_save_path()):
+            os.makedirs(generator_options.get_obj_det_save_path())
 
     if generator_options.save_mask:
         if not os.path.isdir(generator_options.mask_save_path):
@@ -63,8 +63,9 @@ def save_data(artificial_image, semantic_label, obj_det_label, index):
         generator_options.name_format %
         (index + generator_options.start_index) + '.png'),
         semantic_label)
-
-    if generator_options.save_obj_det_label:
+    # print("inside saver bool",generator_options.get_save_obj_det_label())
+    if generator_options.get_save_obj_det_label():
+        # print("inside saver ",generator_options.get_obj_det_save_path())
         img_path = os.path.join(
             generator_options.image_save_path,
             generator_options.name_format %
@@ -74,7 +75,7 @@ def save_data(artificial_image, semantic_label, obj_det_label, index):
                         img_dimension[1])
         [writer.addObject(*l) for l in obj_det_label]
         save_path = os.path.join(
-                generator_options.obj_det_save_path,
+                generator_options.get_obj_det_save_path(),
                 generator_options.name_format %
                 (index + generator_options.start_index) + '.xml')
         writer.save(save_path)

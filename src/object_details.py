@@ -100,7 +100,7 @@ def get_different_scales(image, image_label, label_value,
             cv2.resize(image_label, (0, 0), fx=scales[i], fy=scales[i]),
             label_value, obj_name))
 
-    image_area = np.product(generator_options.image_dimension)
+    image_area = np.product(generator_options.get_image_dimension())
     for index, obj in enumerate(scaled_objects):
         if not (generator_options.min_obj_area / 100. * image_area
                 < obj['obj_area'] <
