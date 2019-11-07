@@ -2,17 +2,6 @@ import argparse
 import collections
 import copy
 
-
-
-# LABEL_TO_CLASS = {0: 'background', 1: 'biscuits', 2: 'cube', 3: 'chilisausce',
-#                   4: 'deo'}
-#
-# CLASS_TO_LABEL = {value: key for key, value in LABEL_TO_CLASS.items()}
-#
-# SCALES_RANGE_DICT = {'biscuits': None, 'cube': None, 'chilisausce': None,
-#                      'deo': None}
-
-
 # Generating LABEL_TO_CLASS, CLASS_TO_LABEL, SCALES_RANGE_DICT based on labels.txt provided
 label_file_path = './labels.txt'
 labels_file = open(label_file_path)
