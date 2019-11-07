@@ -16,12 +16,12 @@ def get_num_scales_and_objects(files_count):
     :return: num_scales which is either an array of number of scales or a
              single number of scales.
     """
-    if generator_options.num_scales is 'randomize':
+    if generator_options.get_num_scales() is 'randomize':
         number_of_scales = np.random.randint(
                                 1, 5,
                                 size=files_count)
     else:
-        number_of_scales = generator_options.num_scales
+        number_of_scales = generator_options.get_num_scales()
 
     return number_of_scales
 
@@ -102,9 +102,9 @@ def get_different_scales(image, image_label, label_value,
 
     image_area = np.product(generator_options.get_image_dimension())
     for index, obj in enumerate(scaled_objects):
-        if not (generator_options.min_obj_area / 100. * image_area
+        if not (generator_options.get_min_obj_area() / 100. * image_area
                 < obj['obj_area'] <
-                generator_options.max_obj_area / 100. * image_area):
+                generator_options.get_max_obj_area() / 100. * image_area):
             del scaled_objects[index]
 
     return scaled_objects

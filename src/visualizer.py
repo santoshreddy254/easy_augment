@@ -105,7 +105,7 @@ def save_overlay(image, label, index):
     label = label.copy()
     mask = colormap[np.array(label, dtype=np.uint8)]
 
-    alpha = generator_options.overlay_opacity
+    alpha = generator_options.get_overlay_opacity()
     cv2.addWeighted(mask, alpha, image, 1 - alpha,
                     0, image)
     save_path = os.path.join(

@@ -51,9 +51,9 @@ def fetch_image_gt_paths():
     :return: data_paths list.
     """
 
-    if generator_options.src_label_path is not None:
+    if generator_options.get_src_label_path() is not None:
         populate_source()
-    if generator_options.mode == 1:
+    if generator_options.get_mode() == 1:
         object_files_dict = dict()
         files_counter = 0
 

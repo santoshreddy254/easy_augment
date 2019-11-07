@@ -9,6 +9,7 @@ import Main_Window
 import main
 from generate_artificial_images import perform_augmentation
 from arguments import *
+from arguments import label_file_path
 import progress_bar
 import image_resize
 
@@ -121,7 +122,7 @@ class MainWindow(QMainWindow):                           # <===
         self.label_flag = False
 
         self.nameLabel_save_obj_det_label_path = QLabel(self)
-        self.nameLabel_save_obj_det_label_path.setText('Backgrounds folder path:')
+        self.nameLabel_save_obj_det_label_path.setText('Object detection labels folder path:')
         self.nameLabel_save_obj_det_label_path.move(50, 420)
         self.nameLabel_save_obj_det_label_path.resize(200,40)
         self.save_obj_det_label_path = QLineEdit(self)
@@ -133,6 +134,19 @@ class MainWindow(QMainWindow):                           # <===
         self.button4.clicked.connect(self.change_save_obj_det_label_path_folder)
         self.button4.move(520,420)
         self.button4.resize(100,40)
+
+        self.nameLabel_labels_file_path = QLabel(self)
+        self.nameLabel_labels_file_path.setText('Labels.txt file path:')
+        self.nameLabel_labels_file_path.move(50, 470)
+        self.nameLabel_labels_file_path.resize(200,40)
+        self.labels_file_path = QLineEdit(self)
+        self.labels_file_path.setText('./labels.txt')
+        self.labels_file_path.move(300, 470)
+        self.labels_file_path.resize(200,40)
+        self.button5 = QPushButton("Change",self)
+        self.button5.clicked.connect(self.change_labels_file_path)
+        self.button5.move(520,470)
+        self.button5.resize(100,40)
 
         self.button1 = QPushButton("Ok",self)
         self.button1.clicked.connect(self.ok_button)
@@ -146,6 +160,9 @@ class MainWindow(QMainWindow):                           # <===
         folderpath_dlg.setFileMode(QFileDialog.Directory)
         folderpath = folderpath_dlg.getExistingDirectory()
         self.save_obj_det_label_path.setText(folderpath)
+    def change_labels_file_path(self):
+        filepath = QFileDialog.getOpenFileNames(filter='*.txt')
+        self.labels_file_path.setText(filepath[0][0])
 
     def change_image_folder(self):
         folderpath_dlg = QFileDialog()
@@ -173,6 +190,7 @@ class MainWindow(QMainWindow):                           # <===
         elif self.rbutton2.isChecked():
             self.button4.setEnabled(False)
     def ok_button(self):
+        label_file_path = self.labels_file_path.text()
         image_resize.resize_images(self.backgrounds_folder.text(),[int(self.image_dimension1.text()),int(self.image_dimension2.text())])
         image_resize.resize_images(self.image_folder.text(),[int(self.image_dimension1.text()),int(self.image_dimension2.text())])
         image_resize.resize_images(self.label_folder.text(),[int(self.image_dimension1.text()),int(self.image_dimension2.text())])

@@ -4,7 +4,6 @@ from PyQt5.QtCore import Qt
 from PyQt5 import QtGui
 from shutil import copy
 import os
-import AIG_Window
 import Main_Window
 
 

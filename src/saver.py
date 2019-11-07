@@ -13,28 +13,28 @@ def make_save_dirs():
     :return: No returns.
     """
 
-    if generator_options.mode == 1:
-        if not os.path.isdir(generator_options.image_save_path):
-            os.makedirs(generator_options.image_save_path)
+    if generator_options.get_mode() == 1:
+        if not os.path.isdir(generator_options.get_image_save_path()):
+            os.makedirs(generator_options.get_image_save_path())
 
-        if not os.path.isdir(generator_options.label_save_path):
-            os.makedirs(generator_options.label_save_path)
+        if not os.path.isdir(generator_options.get_label_save_path()):
+            os.makedirs(generator_options.get_label_save_path())
 
     if generator_options.get_obj_det_save_path():
         if not os.path.isdir(generator_options.get_obj_det_save_path()):
             os.makedirs(generator_options.get_obj_det_save_path())
 
-    if generator_options.save_mask:
-        if not os.path.isdir(generator_options.mask_save_path):
-            os.makedirs(generator_options.mask_save_path)
+    if generator_options.get_save_mask():
+        if not os.path.isdir(generator_options.get_mask_save_path()):
+            os.makedirs(generator_options.get_mask_save_path())
 
-    if generator_options.save_label_preview:
-        if not os.path.isdir(generator_options.preview_save_path):
-            os.makedirs(generator_options.preview_save_path)
+    if generator_options.get_save_label_preview():
+        if not os.path.isdir(generator_options.get_preview_save_path()):
+            os.makedirs(generator_options.get_preview_save_path())
 
-    if generator_options.save_overlay:
-        if not os.path.isdir(generator_options.overlay_save_path):
-            os.makedirs(generator_options.overlay_save_path)
+    if generator_options.get_save_overlay():
+        if not os.path.isdir(generator_options.get_overlay_save_path()):
+            os.makedirs(generator_options.get_overlay_save_path())
 
 
 def save_data(artificial_image, semantic_label, obj_det_label, index):
@@ -53,31 +53,31 @@ def save_data(artificial_image, semantic_label, obj_det_label, index):
     """
 
     cv2.imwrite(os.path.join(
-        generator_options.image_save_path,
-        generator_options.name_format %
-        (index + generator_options.start_index) + '.jpg'),
+        generator_options.get_image_save_path(),
+        generator_options.get_name_format() %
+        (index + generator_options.get_start_index()) + '.jpg'),
         artificial_image)
 
     cv2.imwrite(os.path.join(
-        generator_options.label_save_path,
-        generator_options.name_format %
-        (index + generator_options.start_index) + '.png'),
+        generator_options.get_label_save_path(),
+        generator_options.get_name_format() %
+        (index + generator_options.get_start_index()) + '.png'),
         semantic_label)
     # print("inside saver bool",generator_options.get_save_obj_det_label())
     if generator_options.get_save_obj_det_label():
         # print("inside saver ",generator_options.get_obj_det_save_path())
         img_path = os.path.join(
-            generator_options.image_save_path,
-            generator_options.name_format %
-            (index + generator_options.start_index) + '.jpg')
+            generator_options.get_image_save_path(),
+            generator_options.get_name_format() %
+            (index + generator_options.get_start_index()) + '.jpg')
         img_dimension = generator_options.image_dimension
         writer = Writer(img_path, img_dimension[0],
                         img_dimension[1])
         [writer.addObject(*l) for l in obj_det_label]
         save_path = os.path.join(
                 generator_options.get_obj_det_save_path(),
-                generator_options.name_format %
-                (index + generator_options.start_index) + '.xml')
+                generator_options.get_name_format() %
+                (index + generator_options.get_start_index()) + '.xml')
         writer.save(save_path)
         # with open(os.path.join(
         #         generator_options.obj_det_save_path,
@@ -89,8 +89,8 @@ def save_data(artificial_image, semantic_label, obj_det_label, index):
     else:
         obj_det_label = None
 
-    if (generator_options.save_mask or
-            generator_options.save_label_preview or
-            generator_options.save_overlay):
+    if (generator_options.get_save_mask() or
+            generator_options.get_save_label_preview() or
+            generator_options.get_save_overlay()):
         save_visuals(artificial_image, semantic_label,
                      obj_det_label, index)

@@ -29,12 +29,12 @@ def remove_clutter(objects_list, augmenter_list, regenerate_count, image_dimensi
         np.fill_diagonal(dist_btw_locations, np.inf)
 
         if (vector_area > np.product(generator_options.get_image_dimension())
-                * generator_options.max_occupied_area or
-                np.any(dist_btw_locations < generator_options.min_distance)):
+                * generator_options.get_max_occupied_area() or
+                np.any(dist_btw_locations < generator_options.get_min_distance())):
             del augmenter_list[index]
             removed_vectors += 1
 
-    if (regenerate_count < generator_options.num_regenerate
+    if (regenerate_count < generator_options.get_num_regenerate()
             and removed_vectors is not 0):
         regenerate_count += 1
         create_augmenter_list(objects_list,image_dimension, is_regeneration=True,
@@ -105,7 +105,7 @@ def create_augmenter_list(objects_list,image_dimension, is_regeneration=False, r
                                     'what_objects': what_objects,
                                     'locations': get_random_locations(num_objects_to_place,image_dimension)})
 
-    if generator_options.remove_clutter:
+    if generator_options.get_remove_clutter():
         remove_clutter(objects_list, augmenter_list,
                        regenerate_count,image_dimension)
 

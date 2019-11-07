@@ -50,7 +50,6 @@ class MainWindow(QMainWindow):
     def browse_image_files(self):
         os.chdir("..")
         destination = os.getcwd() + '/images'
-        print(destination)
         filepaths = QFileDialog.getOpenFileNames()
         self.copy_files(filepaths[0],destination)
     def browse_background_files(self):
