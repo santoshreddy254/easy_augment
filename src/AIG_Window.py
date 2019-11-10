@@ -3,15 +3,15 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
 from PyQt5 import QtGui
 from PyQt5.QtGui import *
-from shutil import copy
+from shutil import copy, rmtree
 import os
 import Main_Window
-import main
-from generate_artificial_images import perform_augmentation
 from arguments import *
-from arguments import label_file_path
+from generate_artificial_images import perform_augmentation
 import progress_bar
 import image_resize
+
+print("inside AIG_Window")
 
 class MainWindow(QMainWindow):                           # <===
     def __init__(self):
@@ -191,6 +191,21 @@ class MainWindow(QMainWindow):                           # <===
             self.button4.setEnabled(False)
     def ok_button(self):
         label_file_path = self.labels_file_path.text()
+        if not os.path.exists(self.backgrounds_folder.text()+"/temp/"):
+            os.makedirs(self.backgrounds_folder.text()+"/temp/")
+        elif os.path.exists(self.backgrounds_folder.text()+"/temp/"):
+            rmtree(self.backgrounds_folder.text()+"/temp/")
+            os.makedirs(self.backgrounds_folder.text()+"/temp/")
+        if not os.path.exists(self.image_folder.text()+"/temp/"):
+            os.makedirs(self.image_folder.text()+"/temp/")
+        elif os.path.exists(self.image_folder.text()+"/temp/"):
+            rmtree(self.image_folder.text()+"/temp/")
+            os.makedirs(self.image_folder.text()+"/temp/")
+        if not os.path.exists(self.label_folder.text()+"/temp/"):
+            os.makedirs(self.label_folder.text()+"/temp/")
+        elif os.path.exists(self.label_folder.text()+"/temp/"):
+            rmtree(self.label_folder.text()+"/temp/")
+            os.makedirs(self.label_folder.text()+"/temp/")
         image_resize.resize_images(self.backgrounds_folder.text(),[int(self.image_dimension1.text()),int(self.image_dimension2.text())])
         image_resize.resize_images(self.image_folder.text(),[int(self.image_dimension1.text()),int(self.image_dimension2.text())])
         image_resize.resize_images(self.label_folder.text(),[int(self.image_dimension1.text()),int(self.image_dimension2.text())])
@@ -198,14 +213,14 @@ class MainWindow(QMainWindow):                           # <===
         generator_options.set_num_images(int(self.num_images.text()))
         generator_options.set_image_type(self.image_type.currentText())
         generator_options.set_max_objects(int(self.max_objects.text()))
-        generator_options.set_image_path(self.image_folder.text())
-        generator_options.set_label_path(self.label_folder.text())
-        generator_options.set_backgrounds_path(self.backgrounds_folder.text())
+        generator_options.set_image_path(self.image_folder.text()+"/temp/")
+        generator_options.set_label_path(self.label_folder.text()+"/temp/")
+        generator_options.set_backgrounds_path(self.backgrounds_folder.text()+"/temp/")
         generator_options.set_image_dimension([int(self.image_dimension1.text()),int(self.image_dimension2.text())])
         generator_options.set_save_obj_det_label(self.label_flag)
         generator_options.set_obj_det_save_path(self.save_obj_det_label_path.text())
 
-        flag = perform_augmentation()
+        flag = perform_augmentation(generator_options)
         if flag:
             self.progress_bar_obj = progress_bar.MainWindow()
             self.progress_bar_obj.show()

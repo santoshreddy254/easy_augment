@@ -1,4 +1,4 @@
-from arguments import generator_options
+# from arguments import generator_options
 from visualizer import save_visuals
 import os
 import cv2
@@ -6,7 +6,7 @@ import csv
 from pascal_voc_writer import Writer
 
 
-def make_save_dirs():
+def make_save_dirs(generator_options):
     """
     This function checks whether the save paths exists. Creates them if
     they do not exist.
@@ -37,7 +37,7 @@ def make_save_dirs():
             os.makedirs(generator_options.get_overlay_save_path())
 
 
-def save_data(artificial_image, semantic_label, obj_det_label, index):
+def save_data(artificial_image, semantic_label, obj_det_label, index,generator_options):
     """
     This function saves the artificial image and its corresponding semantic
     label. Also saves object detection labels, plot preview and segmentation
@@ -51,7 +51,6 @@ def save_data(artificial_image, semantic_label, obj_det_label, index):
     :param index: The index value to be included in the name of the files.
     :return: No returns.
     """
-
     cv2.imwrite(os.path.join(
         generator_options.get_image_save_path(),
         generator_options.get_name_format() %
@@ -63,9 +62,7 @@ def save_data(artificial_image, semantic_label, obj_det_label, index):
         generator_options.get_name_format() %
         (index + generator_options.get_start_index()) + '.png'),
         semantic_label)
-    # print("inside saver bool",generator_options.get_save_obj_det_label())
     if generator_options.get_save_obj_det_label():
-        # print("inside saver ",generator_options.get_obj_det_save_path())
         img_path = os.path.join(
             generator_options.get_image_save_path(),
             generator_options.get_name_format() %

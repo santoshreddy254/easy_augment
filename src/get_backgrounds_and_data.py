@@ -1,5 +1,4 @@
-from arguments import generator_options
-from arguments import CLASS_TO_LABEL
+
 import os
 import logging
 import cv2
@@ -7,14 +6,15 @@ from populate_src import populate_source
 import numpy as np
 
 
-def fetch_background_images():
+
+def fetch_background_images(generator_options):
     """
     :return: Returns a list of background images.
     :raises: Warning if background does not have the required dimension.
             The background is then resized.
     """
-
     backgrounds_path = generator_options.get_backgrounds_path()
+    print("path ",backgrounds_path)
     background_files = os.listdir(backgrounds_path)
     background_files = [os.path.join(backgrounds_path, file)
                         for file in background_files]
@@ -35,7 +35,7 @@ def fetch_background_images():
     return background_imgs
 
 
-def fetch_image_gt_paths():
+def fetch_image_gt_paths(generator_options):
     """
     Mode 1 (Generation):
     This function counts the number of annotated images and
@@ -50,7 +50,6 @@ def fetch_image_gt_paths():
     label path and object detection path.
     :return: data_paths list.
     """
-
     if generator_options.get_src_label_path() is not None:
         populate_source()
     if generator_options.get_mode() == 1:
@@ -94,7 +93,7 @@ def fetch_image_gt_paths():
         return data_paths
 
 
-def read_image_labels(object_files_dict):
+def read_image_labels(object_files_dict,generator_options):
     """
 
     :param object_files_dict: A dictionary which maps object names
@@ -102,7 +101,7 @@ def read_image_labels(object_files_dict):
     :return: A dictionary which maps object names to corresponding
              image and label data.
     """
-
+    LABEL_TO_CLASS, CLASS_TO_LABEL, _ = generator_options.generate_label_to_class()
     class_name_to_data_dict = {}
     for key in CLASS_TO_LABEL:
         if key is not 'background':

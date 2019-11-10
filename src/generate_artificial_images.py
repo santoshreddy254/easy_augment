@@ -1,4 +1,4 @@
-from arguments import generator_options, CLASS_TO_LABEL
+# from arguments import generator_options
 from object_details import get_scaled_objects
 from generate_augmenter_list import create_augmenter_list
 from saver import make_save_dirs
@@ -10,7 +10,7 @@ from joblib import Parallel, delayed
 import multiprocessing
 
 
-def get_locations_in_image(obj_locations):
+def get_locations_in_image(obj_locations,generator_options):
     """
     :param obj_locations: List of (x,y) locations.
     :return: array of locations within the image space.
@@ -25,7 +25,7 @@ def get_locations_in_image(obj_locations):
 
 
 def get_augmented_image(original_image, original_label,
-                        obj_details, location):
+                        obj_details, location,generator_options):
     """
     This function gets an image, label and object details and returns
     a new image and label with the object placed.
@@ -37,7 +37,6 @@ def get_augmented_image(original_image, original_label,
                      needs to be placed.
     :return: returns image and label augmented with the object to be placed.
     """
-
     augmented_image = original_image.copy()
     augmented_label = original_label.copy()
     obj_details_to_augment = copy.deepcopy(obj_details)
@@ -47,7 +46,6 @@ def get_augmented_image(original_image, original_label,
                                           min_loc_index, :] - location)
 
     for index, loc in enumerate(obj_details_to_augment['obj_loc']):
-        # print(loc[0], generator_options.get_image_dimension()[0])
         if (0 < loc[0] < augmented_image.shape[0]
                 and 0 < loc[1] < augmented_image.shape[1]):
             augmented_image[tuple(loc)] = obj_details_to_augment[
@@ -57,7 +55,7 @@ def get_augmented_image(original_image, original_label,
 
     if generator_options.get_save_obj_det_label():
         obj_locations = get_locations_in_image(
-                                obj_details_to_augment['obj_loc'])
+                                obj_details_to_augment['obj_loc'],generator_options)
         rect_points = [min(obj_locations[:, 1]), min(obj_locations[:, 0]),
                        max(obj_locations[:, 1]), max(obj_locations[:, 0])]
 
@@ -67,7 +65,7 @@ def get_augmented_image(original_image, original_label,
     return augmented_image, augmented_label
 
 
-def worker(objects_list, index, element, obj_det_label, background_label):
+def worker(objects_list, index, element, obj_det_label, background_label,generator_options):
     """
     This is a worker function created for parallel processing
      of "perform_augmentation" function.
@@ -93,18 +91,18 @@ def worker(objects_list, index, element, obj_det_label, background_label):
                 get_augmented_image(artificial_image,
                                     semantic_label,
                                     obj_details_list[i],
-                                    element['locations'][i]))
+                                    element['locations'][i],generator_options))
             obj_det_label.append(rect_label)
         else:
             artificial_image, semantic_label = (
                 get_augmented_image(artificial_image,
                                     semantic_label,
                                     obj_details_list[i],
-                                    element['locations'][i]))
-    save_data(artificial_image, semantic_label, obj_det_label, index)
+                                    element['locations'][i],generator_options))
+    save_data(artificial_image, semantic_label, obj_det_label, index,generator_options)
 
 
-def perform_augmentation():
+def perform_augmentation(generator_options):
     """
 
     This function goes through the augmenter list and generates an artificial
@@ -115,10 +113,10 @@ def perform_augmentation():
     pasted on top of the 'background_image' in the element...
     :return: No returns.
     """
-
-    make_save_dirs()
-    objects_list = get_scaled_objects()
-    augmenter_list = create_augmenter_list(objects_list,generator_options.get_image_dimension())
+    _, CLASS_TO_LABEL, _ = generator_options.generate_label_to_class()
+    make_save_dirs(generator_options)
+    objects_list = get_scaled_objects(generator_options)
+    augmenter_list = create_augmenter_list(objects_list,generator_options.get_image_dimension(),generator_options)
     obj_det_label = list()
     background_label = np.ones(tuple(
         generator_options.get_image_dimension())) * (
@@ -126,7 +124,7 @@ def perform_augmentation():
 
     num_cores = multiprocessing.cpu_count()
     Parallel(n_jobs=num_cores)(delayed(worker)(objects_list, index,
-                                               element, obj_det_label, background_label)
+                                               element, obj_det_label, background_label,generator_options)
                                for index, element in enumerate(tqdm.tqdm(
                                                     augmenter_list,
                                                     desc='Generating artificial images')))

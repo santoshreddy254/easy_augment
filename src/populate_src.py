@@ -1,11 +1,13 @@
 import os
 import cv2
 import numpy as np
-from arguments import LABEL_TO_CLASS
-from arguments import generator_options
-
+# from arguments import LABEL_TO_CLASS
+# from arguments import generator_options
 
 def populate_source():
+    import AIG_Window
+    generator_options = AIG_Window.get_generator_options()
+    LABEL_TO_CLASS, CLASS_TO_LABEL, _ = generator_options.generate_label_to_class()
     src_label_path = generator_options.src_label_path
     src_image_path = generator_options.src_image_path
 

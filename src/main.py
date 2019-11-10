@@ -1,6 +1,5 @@
-import sys
-sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
-from arguments import generator_options
+
+# from arguments import generator_options
 from generate_artificial_images import perform_augmentation
 from visualizer import save_visuals
 from saver import make_save_dirs
@@ -23,7 +22,8 @@ def read_files_and_visualize(data_p):
     :param data_p: List containing paths to images and labels
     :return: No returns.
     """
-
+    import AIG_Window
+    generator_options = AIG_Window.get_generator_options()
     image = cv2.imread(data_p[0])
     label = cv2.imread(data_p[1], 0)
     name = data_p[1].split('/')[-1].split('.')[0]
@@ -51,7 +51,8 @@ def read_files_and_visualize(data_p):
 
 
 if __name__ == '__main__':
-
+    import AIG_Window
+    generator_options = AIG_Window.get_generator_options()
     if generator_options.mode == 1:
         perform_augmentation()
     else:

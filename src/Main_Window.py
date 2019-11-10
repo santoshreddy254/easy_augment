@@ -5,7 +5,6 @@ from PyQt5 import QtGui
 from shutil import copy
 import os
 import AIG_Window
-
 # Subclass QMainWindow to customise your application's main window
 class MainWindow(QMainWindow):
 
@@ -55,7 +54,6 @@ class MainWindow(QMainWindow):
     def browse_background_files(self):
         os.chdir("..")
         destination = os.getcwd() + '/backgrounds'
-        print(destination)
         filepaths = QFileDialog.getOpenFileNames()
         self.copy_files(filepaths[0],destination)
 

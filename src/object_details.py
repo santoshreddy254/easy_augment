@@ -1,5 +1,4 @@
-from arguments import generator_options, \
-    CLASS_TO_LABEL, SCALES_RANGE_DICT
+# from arguments import generator_options
 from get_backgrounds_and_data import read_image_labels, \
     fetch_image_gt_paths
 import tqdm
@@ -7,7 +6,7 @@ import numpy as np
 import cv2
 
 
-def get_num_scales_and_objects(files_count):
+def get_num_scales_and_objects(files_count,generator_options):
 
     """
     This function picks a random number of scales in the range 1 to 5
@@ -64,7 +63,7 @@ def find_obj_loc_and_vals(image, label, label_value, obj_name):
 
 
 def get_different_scales(image, image_label, label_value,
-                         number_of_scales, obj_name, obj_num):
+                         number_of_scales, obj_name, obj_num,generator_options):
     """
     This functions creates different scales of the object based on the
     number of scales parameter and removes objects which are too small.
@@ -77,7 +76,7 @@ def get_different_scales(image, image_label, label_value,
     :param obj_num: Current image number.
     :return: A list of dictionaries containing details of the scaled objects.
     """
-
+    _, CLASS_TO_LABEL, SCALES_RANGE_DICT = generator_options.generate_label_to_class()
     if type(number_of_scales) is np.ndarray:
         num_scales = number_of_scales[obj_num]
         scale_difference = 1.2 / number_of_scales[obj_num]
@@ -110,20 +109,19 @@ def get_different_scales(image, image_label, label_value,
     return scaled_objects
 
 
-def get_scaled_objects():
+def get_scaled_objects(generator_options):
     """
     This function returns a list of details of all objects.
 
     :return: A list of dictionaries containing details of all the scaled objects.
     """
-
+    _, CLASS_TO_LABEL, SCALES_RANGE_DICT = generator_options.generate_label_to_class()
     objects_list = list()
     obj_num = -1
 
-    files_count, object_files = fetch_image_gt_paths()
-    number_of_scales = get_num_scales_and_objects(files_count)
-    class_name_to_data = read_image_labels(object_files)
-
+    files_count, object_files = fetch_image_gt_paths(generator_options)
+    number_of_scales = get_num_scales_and_objects(files_count,generator_options)
+    class_name_to_data = read_image_labels(object_files,generator_options)
     for key in tqdm.tqdm(CLASS_TO_LABEL,
                          desc='Loading images and labels class by class'):
         if key is not 'background':
@@ -134,6 +132,6 @@ def get_scaled_objects():
                                                      data[1],
                                                      CLASS_TO_LABEL[key],
                                                      number_of_scales,
-                                                     key, obj_num)
+                                                     key, obj_num,generator_options)
 
     return objects_list

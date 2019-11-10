@@ -1,7 +1,7 @@
 #!/bin/sh
 if [ -d "augmented" ]; then
   # Control will enter here if $DIRECTORY exists.
-  rm -R augmented
+  rm -rf augmented
   mkdir augmented && mkdir augmented/images && mkdir augmented/labels && mkdir augmented/obj_det_labels
 fi
 if [ ! -d "augmented" ]; then

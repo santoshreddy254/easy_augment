@@ -1,4 +1,4 @@
-from arguments import generator_options, CLASS_TO_LABEL
+# from arguments import generator_options
 import matplotlib.pyplot as plt
 import cv2
 import os
@@ -34,7 +34,9 @@ def plot_preview(image, label, obj_det_label, index):
     :param index: The index number of the image.
     :return: Nothing is returned.
     """
-
+    import AIG_Window
+    generator_options = AIG_Window.get_generator_options()
+    _, CLASS_TO_LABEL, _ = generator_options.generate_label_to_class()
     label = label.copy()
 
     figure = plt.figure()
@@ -100,7 +102,8 @@ def save_overlay(image, label, index):
     :param index: Index to be appended to save file name.
     :return: No returns.
     """
-
+    import AIG_Window
+    generator_options = AIG_Window.get_generator_options()
     image = image.copy()
     label = label.copy()
     mask = colormap[np.array(label, dtype=np.uint8)]
@@ -126,6 +129,8 @@ def save_visuals(image, label, obj_det_label, index):
     :param index: Index to be appended to save file name.
     :return: No returns.
     """
+    import AIG_Window
+    generator_options = AIG_Window.get_generator_options()
     if generator_options.save_mask:
         cv2.imwrite(os.path.join(
             generator_options.mask_save_path,
