@@ -4,8 +4,10 @@ import os
 import cv2
 import csv
 from pascal_voc_writer import Writer
+# import progress_bar
 
 
+# main_window = progress_bar.MainWindow()
 def make_save_dirs(generator_options):
     """
     This function checks whether the save paths exists. Creates them if
@@ -86,8 +88,10 @@ def save_data(artificial_image, semantic_label, obj_det_label, index,generator_o
     else:
         obj_det_label = None
 
+    # main_window.progress_bar(len(index))
+    # main_window.show()
     if (generator_options.get_save_mask() or
             generator_options.get_save_label_preview() or
             generator_options.get_save_overlay()):
         save_visuals(artificial_image, semantic_label,
-                     obj_det_label, index)
+                     obj_det_label, index,generator_options)

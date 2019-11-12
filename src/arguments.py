@@ -9,8 +9,8 @@ class GeneratorOptions():
 		self.image_dimension = [480,640]
 		self.num_scales = 'randomize'
 		self.backgrounds_path = ''
-		self.image_path = './images'
-		self.label_path = './semantic_labels'
+		self.image_path = ''
+		self.label_path = ''
 		self.src_image_path = None
 		self.src_label_path = None
 		self.obj_det_save_path = ''
@@ -22,8 +22,8 @@ class GeneratorOptions():
 		self.save_mask = False
 		self.save_overlay = False
 		self.overlay_opacity = 0.6
-		self.image_save_path = './augmented/images'
-		self.label_save_path = './augmented/labels'
+		self.image_save_path = ''
+		self.label_save_path = ''
 		self.preview_save_path = None
 		self.obj_det_save_path = None
 		self.mask_save_path = None
@@ -37,14 +37,18 @@ class GeneratorOptions():
 		self.min_distance = 100
 		self.max_occupied_area = 0.8
 		self.save_obj_det_label = False
-		self.label_file_path = './labels.txt'
+		self.labels_file_path = ''
 
 
+	def set_labels_file_path(self,labels_file_path):
+		self.labels_file_path = labels_file_path
+	def get_labels_file_path(self):
+		return self.labels_file_path
 	def generate_label_to_class(self):
 		self.labels = ['background']
 		self.LABEL_TO_CLASS = dict()
 		self.SCALES_RANGE_DICT = dict()
-		self.labels_file = open(self.label_file_path)
+		self.labels_file = open(self.labels_file_path)
 		for i in self.labels_file.readlines():
 			if i.rstrip()not in['__ignore__','_background_']:
 				self.labels.append(i.rstrip())

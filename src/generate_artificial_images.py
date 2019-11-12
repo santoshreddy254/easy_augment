@@ -37,6 +37,7 @@ def get_augmented_image(original_image, original_label,
                      needs to be placed.
     :return: returns image and label augmented with the object to be placed.
     """
+
     augmented_image = original_image.copy()
     augmented_label = original_label.copy()
     obj_details_to_augment = copy.deepcopy(obj_details)

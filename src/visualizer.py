@@ -22,7 +22,7 @@ colormap = np.asarray([list(reversed(rgb)) for rgb in colormap],
                       dtype=np.uint8)
 
 
-def plot_preview(image, label, obj_det_label, index):
+def plot_preview(image, label, obj_det_label, index,generator_options):
 
     """
     This function can be used to plot a preview image,
@@ -34,8 +34,6 @@ def plot_preview(image, label, obj_det_label, index):
     :param index: The index number of the image.
     :return: Nothing is returned.
     """
-    import AIG_Window
-    generator_options = AIG_Window.get_generator_options()
     _, CLASS_TO_LABEL, _ = generator_options.generate_label_to_class()
     label = label.copy()
 
@@ -93,7 +91,7 @@ def plot_preview(image, label, obj_det_label, index):
     plt.close(figure)
 
 
-def save_overlay(image, label, index):
+def save_overlay(image, label, index,generator_options):
     """
     This function overlays the segmentation label on the image and
     saves the resultant image.
@@ -102,8 +100,6 @@ def save_overlay(image, label, index):
     :param index: Index to be appended to save file name.
     :return: No returns.
     """
-    import AIG_Window
-    generator_options = AIG_Window.get_generator_options()
     image = image.copy()
     label = label.copy()
     mask = colormap[np.array(label, dtype=np.uint8)]
@@ -118,7 +114,7 @@ def save_overlay(image, label, index):
     cv2.imwrite(save_path, image)
 
 
-def save_visuals(image, label, obj_det_label, index):
+def save_visuals(image, label, obj_det_label, index,generator_options):
     """
     This function saves the mask if generator option requires
     mask saving. Also calls preview plotting and saving image
@@ -129,8 +125,6 @@ def save_visuals(image, label, obj_det_label, index):
     :param index: Index to be appended to save file name.
     :return: No returns.
     """
-    import AIG_Window
-    generator_options = AIG_Window.get_generator_options()
     if generator_options.save_mask:
         cv2.imwrite(os.path.join(
             generator_options.mask_save_path,
@@ -139,7 +133,7 @@ def save_visuals(image, label, obj_det_label, index):
             colormap[np.array(label, dtype=np.uint8)])
 
     if generator_options.save_label_preview:
-        plot_preview(image, label, obj_det_label, index)
+        plot_preview(image, label, obj_det_label, index,generator_options)
 
     if generator_options.save_overlay:
-        save_overlay(image, label, index)
+        save_overlay(image, label, index,generator_options)
