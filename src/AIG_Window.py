@@ -5,10 +5,10 @@ from PyQt5 import QtGui
 from PyQt5.QtGui import *
 from shutil import copy, rmtree
 import os
-from arguments import *
-from generate_artificial_images import perform_augmentation
+from utils.arguments import *
+from utils.generate_artificial_images import perform_augmentation
 import progress_bar
-import image_resize
+import utils.image_resize as image_resize
 from pathlib import Path
 
 print("inside AIG_Window")
