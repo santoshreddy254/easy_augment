@@ -13,17 +13,14 @@ def test_gui(qtbot):
     # app = QApplication(sys.argv)
     window = AIG_Window.MainWindow()
     qtbot.addWidget(window)
-    window.num_images.setText(str(10))
-    window.image_folder.setText("/home/santosh/MAS/SDP/Data_Augmentor_With_GUI/images")
-    window.label_folder.setText("/home/santosh/MAS/SDP/Data_Augmentor_With_GUI/semantic_labels")
-    window.backgrounds_folder.setText("/home/santosh/MAS/SDP/Data_Augmentor_With_GUI/backgrounds")
-    window.labels_file_path.setText("/home/santosh/MAS/SDP/Data_Augmentor_With_GUI/labels.txt")
-
-    # qtbot.mouseClick(window.button2, Qt.LeftButton)
-    # qtbot.mouseClick(window.folderpath_dlg,)
+    window.num_images.setText(str(2))
+    cwd = os.getcwd()
+    window.image_folder.setText(cwd+"/images")
+    window.label_folder.setText(cwd+"/semantic_labels")
+    window.backgrounds_folder.setText(cwd+"/backgrounds")
+    window.labels_file_path.setText(cwd+"/labels.txt")
     window.show()
     qtbot.waitForWindowShown(window)
-    # sleep(5)
     print(window.button1.isEnabled())
 
     assert window.button1.isEnabled() == True

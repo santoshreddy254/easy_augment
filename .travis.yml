@@ -11,5 +11,5 @@ install:
   - sudo apt-get install -qq libegl1-mesa
   - pip3 install -r requirements.txt
 script:
-  - py.test gui_testing.py
+  - py.test /src/gui_testing.py
 
