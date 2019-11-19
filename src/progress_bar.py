@@ -11,7 +11,7 @@ class MainWindow(QWidget):                           # <===
     def __init__(self):
         super().__init__()
         self.setWindowTitle("b-it-bots -- Data Augmentor")
-        self.setWindowIcon(QtGui.QIcon(os.path.dirname(os.path.realpath(__file__))+'/b-it-bots.jpg'))
+        self.setWindowIcon(QtGui.QIcon(os.path.dirname(os.path.realpath(__file__))+'/data/b-it-bots.jpg'))
         self.setGeometry(100,100,550,100)
         self.progress_bar()
     def progress_bar(self):

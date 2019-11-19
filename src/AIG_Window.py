@@ -8,16 +8,14 @@ import os
 from utils.arguments import *
 from utils.generate_artificial_images import perform_augmentation
 import progress_bar
-import utils.image_resize as image_resize
+from utils.preprocessing import resize_images, rename_images_labels, rename_backgrounds
 from pathlib import Path
-
-print("inside AIG_Window")
 
 class MainWindow(QWidget):                           # <===
     def __init__(self):
         super().__init__()
         self.setWindowTitle("b-it-bots -- Data Augmentor")
-        self.setWindowIcon(QtGui.QIcon(os.path.dirname(os.path.realpath(__file__))+'/b-it-bots.jpg'))
+        self.setWindowIcon(QtGui.QIcon(os.path.dirname(os.path.realpath(__file__))+'/data/b-it-bots.jpg'))
         self.setGeometry(100,100,650,700)
         self.aig_form()
     def aig_form(self):
@@ -78,6 +76,7 @@ class MainWindow(QWidget):                           # <===
         self.label_folder.resize(200,40)
         self.button3 = QPushButton("Change",self)
         self.button3.clicked.connect(self.change_labels_folder)
+        self.label_folder.textChanged.connect(self.button_status)
         self.button3.move(520,220)
         self.button3.resize(100,40)
 
@@ -91,6 +90,7 @@ class MainWindow(QWidget):                           # <===
         self.backgrounds_folder.resize(200,40)
         self.button3 = QPushButton("Change",self)
         self.button3.clicked.connect(self.change_backgrounds_folder)
+        self.backgrounds_folder.textChanged.connect(self.button_status)
         self.button3.move(520,270)
         self.button3.resize(100,40)
 
@@ -142,10 +142,8 @@ class MainWindow(QWidget):                           # <===
         self.nameLabel_save_obj_det_label.move(50, 470)
         self.nameLabel_save_obj_det_label.resize(200,40)
         self.rbutton1 = QRadioButton("True",self)
-        # self.rbutton1.move(300,470)
         self.rbutton2 = QRadioButton("False",self)
         self.rbutton2.setChecked(True)
-        # self.rbutton2.move(400,470)
         self.hbox_1 = QHBoxLayout(self)
         self.hbox_1.addWidget(self.rbutton1)
         self.hbox_1.addWidget(self.rbutton2)
@@ -153,7 +151,6 @@ class MainWindow(QWidget):                           # <===
         self.group_1.setLayout(self.hbox_1)
         self.group_1.move(300,450)
         self.group_1.resize(200,60)
-        self.rbutton1.toggled.connect(self.button_status)
         self.label_flag = False
 
         self.group_2 = QGroupBox(self)
@@ -211,6 +208,8 @@ class MainWindow(QWidget):                           # <===
         folderpath = folderpath_dlg.getExistingDirectory()
         self.backgrounds_folder.setText(folderpath)
     def button_status(self):
+        print("iside button status",len(self.num_images.text())>0)
+        print("inside button ",self.image_folder.text() != self.home_path)
         if len(self.num_images.text())>0 and self.image_folder.text() != self.home_path and self.label_folder.text() != self.home_path and self.backgrounds_folder.text() != self.home_path:
             print(self.image_folder.text()!=self.home_path)
             print("inside button status")
@@ -261,9 +260,11 @@ class MainWindow(QWidget):                           # <===
             self.save_mask_flag = True
         elif self.rbutton4.isChecked():
             self.save_mask_flag = False
-        image_resize.resize_images(self.backgrounds_folder.text(),[int(self.image_dimension1.text()),int(self.image_dimension2.text())])
-        image_resize.resize_images(self.image_folder.text(),[int(self.image_dimension1.text()),int(self.image_dimension2.text())])
-        image_resize.resize_images(self.label_folder.text(),[int(self.image_dimension1.text()),int(self.image_dimension2.text())])
+        resize_images(self.backgrounds_folder.text(),[int(self.image_dimension1.text()),int(self.image_dimension2.text())])
+        resize_images(self.image_folder.text(),[int(self.image_dimension1.text()),int(self.image_dimension2.text())])
+        resize_images(self.label_folder.text(),[int(self.image_dimension1.text()),int(self.image_dimension2.text())])
+        rename_images_labels(self.label_folder.text()+"/temp/",self.image_folder.text()+"/temp/",self.labels_file_path.text())
+        rename_backgrounds(self.backgrounds_folder.text()+"/temp/")
         generator_options = GeneratorOptions()
         generator_options.set_num_images(int(self.num_images.text()))
         generator_options.set_image_type(self.image_type.currentText())
