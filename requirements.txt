@@ -8,4 +8,4 @@ matplotlib
 numpy
 pascal-voc-tools
 pascal-voc-writer
-pytestqt
+pytest-qt
