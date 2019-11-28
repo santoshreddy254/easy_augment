@@ -6,8 +6,7 @@ import numpy as np
 import cv2
 
 
-def get_num_scales_and_objects(files_count,generator_options):
-
+def get_num_scales_and_objects(files_count, generator_options):
     """
     This function picks a random number of scales in the range 1 to 5
     for each real image if num_scales is randomize. Else takes num_scales.
@@ -17,16 +16,14 @@ def get_num_scales_and_objects(files_count,generator_options):
     """
     if generator_options.get_num_scales() is 'randomize':
         number_of_scales = np.random.randint(
-                                1, 5,
-                                size=files_count)
+            1, 5,
+            size=files_count)
     else:
         number_of_scales = generator_options.get_num_scales()
-
     return number_of_scales
 
 
 def find_obj_loc_and_vals(image, label, label_value, obj_name):
-
     """
     This function creates a dictionary containing details regarding
     an object in an image.
@@ -63,7 +60,7 @@ def find_obj_loc_and_vals(image, label, label_value, obj_name):
 
 
 def get_different_scales(image, image_label, label_value,
-                         number_of_scales, obj_name, obj_num,generator_options):
+                         number_of_scales, obj_name, obj_num, generator_options):
     """
     This functions creates different scales of the object based on the
     number of scales parameter and removes objects which are too small.
@@ -92,19 +89,22 @@ def get_different_scales(image, image_label, label_value,
                              num=num_scales)
 
     scaled_objects = list()
-
     for i in range(0, num_scales):
         scaled_objects.append(find_obj_loc_and_vals(
             cv2.resize(image, (0, 0), fx=scales[i], fy=scales[i]),
             cv2.resize(image_label, (0, 0), fx=scales[i], fy=scales[i]),
             label_value, obj_name))
 
-    image_area = np.product(generator_options.get_image_dimension())
-    for index, obj in enumerate(scaled_objects):
-        if not (generator_options.get_min_obj_area() / 100. * image_area
-                < obj['obj_area'] <
-                generator_options.get_max_obj_area() / 100. * image_area):
-            del scaled_objects[index]
+    # Not needed it might effect for smaller objects in a given image
+
+    # image_area = np.product(generator_options.get_image_dimension())
+    # for index, obj in enumerate(scaled_objects):
+    #     print(obj['obj_area'], generator_options.get_min_obj_area() / 100. *
+    #           image_area, generator_options.get_max_obj_area() / 100. * image_area, image_area)
+    #     if not (generator_options.get_min_obj_area() / 100. * image_area
+    #             < obj['obj_area'] <
+    #             generator_options.get_max_obj_area() / 100. * image_area):
+    #         del scaled_objects[index]
 
     return scaled_objects
 
@@ -120,8 +120,8 @@ def get_scaled_objects(generator_options):
     obj_num = -1
 
     files_count, object_files = fetch_image_gt_paths(generator_options)
-    number_of_scales = get_num_scales_and_objects(files_count,generator_options)
-    class_name_to_data = read_image_labels(object_files,generator_options)
+    number_of_scales = get_num_scales_and_objects(files_count, generator_options)
+    class_name_to_data = read_image_labels(object_files, generator_options)
     for key in tqdm.tqdm(CLASS_TO_LABEL,
                          desc='Loading images and labels class by class'):
         if key is not 'background':
@@ -132,6 +132,6 @@ def get_scaled_objects(generator_options):
                                                      data[1],
                                                      CLASS_TO_LABEL[key],
                                                      number_of_scales,
-                                                     key, obj_num,generator_options)
+                                                     key, obj_num, generator_options)
 
     return objects_list
