@@ -99,6 +99,23 @@ def get_colored_clusters(clusters, cloud):
     return colored_points
 
 
+def get_cloud_clusters(clusters, cloud):
+
+    # Get a random unique colors for each object
+    number_of_clusters = len(clusters)
+
+    colored_points = []
+
+    # Assign a color for each point
+    # Points with the same color belong to the same cluster
+    for cluster_id, cluster in enumerate(clusters):
+        for c, i in enumerate(cluster):
+            x, y, z = cloud[i][0], cloud[i][1], cloud[i][2]
+            colored_points.append([x, y, z])
+
+    return colored_points
+
+
 def random_color_gen():
     """ Generates a random color
 
