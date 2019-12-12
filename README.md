@@ -17,9 +17,8 @@ generate semantic labels of the captured image and then generate the artificial 
 4) Making the software pip/conda installable
 5) Writing test cases
 6) Integration with github CI
-### Delivarables
-1) At the end of SDP course, expected to deliver working software as per the above mentioned
-requirements.
+
+### Installation
 
 
 
