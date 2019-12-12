@@ -23,7 +23,7 @@ def get_object_points(color_frame, depth_frame):
     cloud = pcl.PointCloud(verts)
     filtered_cloud = do_passthrough_filter(point_cloud=cloud,
                                            name_axis='z', min_axis=0.0, max_axis=1.0)
-    downsampled_cloud = do_voxel_grid_filter(point_cloud=filtered_cloud, LEAF_SIZE=0.003)
+    downsampled_cloud = do_voxel_grid_filter(point_cloud=filtered_cloud, LEAF_SIZE=0.004)
 
     table_cloud, objects_cloud = do_ransac_plane_segmentation(
         downsampled_cloud, max_distance=0.01)
@@ -58,7 +58,7 @@ def get_mask(Pixel_Coord):
         thresh[int(px[1]), int(px[0])] = 255
         x_sum += px[0]
         y_sum += px[1]
-    kernel = np.ones((3, 3), np.uint8)
+    kernel = np.ones((30, 30), np.uint8)
     im_opening = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
     contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     conts = np.concatenate(contours)
