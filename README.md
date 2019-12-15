@@ -21,82 +21,67 @@ generate semantic labels of the captured image and then generate the artificial 
 ### Installation
 
 
-# Product Name
-> Short blurb about what your product does.
+# Realsense Augmentor
 
-[![NPM Version][npm-image]][npm-url]
-[![Build Status][travis-image]][travis-url]
-[![Downloads Stats][npm-downloads]][npm-url]
+[![Build Status](https://travis-ci.org/santoshreddy254/Data_Augmentor_With_GUI.svg?branch=master)](https://travis-ci.org/santoshreddy254/Data_Augmentor_With_GUI)
 
-One to two paragraph statement about your product and what it does.
+> End to end software to capture new objects using RGBD camera and augment them to get a annotated dataset to train deep nets
+
+1) Pipeline to artificial generate annotated data for training deep learning models.
+2) Pipeline includes starting from capturing images using provided camera (Realsense),
+generate semantic labels of the captured image and then generate the artificial images.
+3) GUI required for the end user from capturing to labelling and generating new data.
 
 ![](header.png)
+## Requirements
+1) Ubuntu 16.04 or higher
+2) Intel Realsense Camera
+3) Processer intel i5 or higher
+4) Ram ?
+5) python3
 
 ## Installation
 
-OS X & Linux:
+Linux:
 
 ```sh
-npm install my-crazy-module --save
+git clone https://github.com/santoshreddy254/realsense_augmentor.git
+cd realsense_augmentor
+./setup.sh
 ```
 
-Windows:
-
-```sh
-edit autoexec.bat
-```
 
 ## Usage example
 
-A few motivating and useful examples of how your product can be used. Spice this up with code blocks and potentially more screenshots.
-
-_For more examples and usage, please refer to the [Wiki][wiki]._
-
-## Development setup
-
-Describe how to install all development dependencies and how to run an automated test-suite of some kind. Potentially do this for multiple platforms.
-
 ```sh
-make install
-npm test
+cd realsense_augmentor
+python3 src/Start_gui.py
 ```
+1) Start page will be as below and select the path to save the captured images.
+![alt text](https://github.com/santoshreddy254/artificial_image_generator/blob/master/labels.png)
+2) Next window will have image and mask of corresponding object. Capture as many as images per classe.
+![alt text](https://github.com/santoshreddy254/artificial_image_generator/blob/master/labels.png)
+3) Click add to add new class label.
+![alt text](https://github.com/santoshreddy254/artificial_image_generator/blob/master/labels.png)
+4) Click save to save the current displyed image and semantic label.
+5) Click finish once done with capturing all the images.
+6) Folder name \textbf{captured_data} in selected save path will have images, labels and labels.txt
+6) Input parameters to generate artificial images need to be filled next window.
+![alt text](https://github.com/santoshreddy254/artificial_image_generator/blob/master/labels.png)
+7) Click OK once setting up the parameters.
+8) Folder name \textbf{augmented} in selected save path will have artificial images.
+
 
 ## Release History
 
-* 0.2.1
-    * CHANGE: Update docs (module code remains unchanged)
-* 0.2.0
-    * CHANGE: Remove `setDefaultXYZ()`
-    * ADD: Add `init()`
-* 0.1.1
-    * FIX: Crash when calling `baz()` (Thanks @GenerousContributorName!)
-* 0.1.0
-    * The first proper release
-    * CHANGE: Rename `foo()` to `bar()`
-* 0.0.1
-    * Work in progress
+
+* 1.0.0
+    * First release for crowd testing
 
 ## Meta
 
-Your Name – [@YourTwitter](https://twitter.com/dbader_org) – YourEmail@example.com
+Santosh Muthireddy – santoshreddy45@yahoo.com
 
-Distributed under the XYZ license. See ``LICENSE`` for more information.
+Distributed under the MLP license. See ``LICENSE`` for more information.
 
-[https://github.com/yourname/github-link](https://github.com/dbader/)
-
-## Contributing
-
-1. Fork it (<https://github.com/yourname/yourproject/fork>)
-2. Create your feature branch (`git checkout -b feature/fooBar`)
-3. Commit your changes (`git commit -am 'Add some fooBar'`)
-4. Push to the branch (`git push origin feature/fooBar`)
-5. Create a new Pull Request
-
-<!-- Markdown link & img dfn's -->
-[npm-image]: https://img.shields.io/npm/v/datadog-metrics.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/datadog-metrics
-[npm-downloads]: https://img.shields.io/npm/dm/datadog-metrics.svg?style=flat-square
-[travis-image]: https://img.shields.io/travis/dbader/node-datadog-metrics/master.svg?style=flat-square
-[travis-url]: https://travis-ci.org/dbader/node-datadog-metrics
-[wiki]: https://github.com/yourname/yourproject/wiki
 
