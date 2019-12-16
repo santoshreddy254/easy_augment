@@ -1,7 +1,7 @@
 
 # Realsense Augmentor
 
-[![Build Status](https://travis-ci.org/santoshreddy254/Data_Augmentor_With_GUI.svg?branch=master)](https://travis-ci.org/santoshreddy254/Data_Augmentor_With_GUI)
+[![Build Status](https://travis-ci.org/santoshreddy254/realsense_augmentor.svg?branch=master)](https://travis-ci.org/santoshreddy254/realsense_augmentor)
 
 > End to end software to capture new objects using RGBD camera and augment them to get a annotated dataset to train deep nets
 
