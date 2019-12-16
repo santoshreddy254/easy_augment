@@ -5,7 +5,7 @@ tqdm
 joblib
 scipy
 matplotlib
-numpy==1.16
+numpy>=1.16
 pascal-voc-tools
 pascal-voc-writer
 pytest-qt
