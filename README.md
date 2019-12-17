@@ -12,10 +12,9 @@ generate semantic labels of the captured image and then generate the artificial 
 
 ![](header.png)
 ## Requirements
-1) Ubuntu 16.04 or higher
+1) Ubuntu 16.04 (Testing for Ubuntu 18.04)
 2) Intel Realsense Camera
 3) Processer intel i5 or higher
-4) Ram ?
 5) python3
 
 ## Limitations
