@@ -15,7 +15,7 @@ generate semantic labels of the captured image and then generate the artificial 
 1) Ubuntu 16.04 (Testing for Ubuntu 18.04)
 2) Intel Realsense Camera
 3) Processer intel i5 or higher
-5) python3
+5) python 3.5
 
 ## Limitations
 1) Number of classes captured should be more than or equal to 2.
