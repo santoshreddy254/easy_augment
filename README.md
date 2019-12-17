@@ -59,9 +59,11 @@ python3 src/Start_gui.py
 * 1.0.0
     * First release for crowd testing
 
-## Meta
+## Contributors
 
-Santosh Muthireddy – santoshreddy45@yahoo.com
+Santosh Muthireddy – santoshreddy45@yahoo.com [https://github.com/santoshreddy254]
+Naresh Kumar Gurulingan - https://github.com/NareshGuru77
+
 
 Distributed under the MLP license. See ``LICENSE`` for more information.
 
