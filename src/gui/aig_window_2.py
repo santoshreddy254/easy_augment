@@ -301,7 +301,7 @@ class MainWindow(QWidget):                           # <===
 
         flag = perform_augmentation(self.generator_options)
         if flag:
-            self.start_gui = Start_gui.MainWindow()
+            self.start_gui = main.MainWindow()
             self.start_gui.show()
             self.hide()
 

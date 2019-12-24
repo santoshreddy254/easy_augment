@@ -11,7 +11,7 @@ import numpy as np
 import cv2
 import pcl
 import os
-from gui import AIG_Window_2
+from gui import aig_window_2
 import copy
 
 
@@ -171,7 +171,7 @@ class App(QWidget):
         self.generator_options.set_labels_file_path(
             self.save_folder_path+"/captured_data/labels.txt")
         self.generator_options.set_max_objects(len(self.label_list))
-        self.aig_window = AIG_Window_2.MainWindow(self.generator_options)
+        self.aig_window = aig_window_2.MainWindow(self.generator_options)
         self.aig_window.show()
         self.th.pipeline.stop()
         self.hide()

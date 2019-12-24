@@ -1,6 +1,6 @@
 import sys
 import os
-import AIG_Window
+import aig_window
 from time import sleep
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt, QTimer

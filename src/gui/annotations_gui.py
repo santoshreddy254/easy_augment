@@ -25,17 +25,24 @@ class MainWindow(QWidget):                           # <===
     def aig_form(self):
         self.home_path = str(Path.home())
 
-        self.button1 = QPushButton("Capture", self)
+        self.nameLabel_save_folder = QLabel(self)
+        self.nameLabel_save_folder.setText('Save folder path:')
+        self.nameLabel_save_folder.move(50, 100)
+        self.nameLabel_save_folder.resize(200, 40)
+        self.save_folder = QLineEdit(self)
+        self.save_folder.setText(self.home_path)
+        self.save_folder.move(300, 100)
+        self.save_folder.resize(200, 40)
+        self.button2 = QPushButton("Change", self)
+        self.button2.clicked.connect(self.change_save_folder)
+        self.button2.move(520, 110)
+        self.button2.resize(100, 20)
+
+        self.button1 = QPushButton("Ok", self)
         self.button1.clicked.connect(self.ok_button)
         self.button1.resize(150, 20)
         self.button1.move(200, 250)
         self.button1.setEnabled(True)
-
-        self.button2 = QPushButton("Have Annotations", self)
-        self.button2.clicked.connect(self.ok_button)
-        self.button2.resize(150, 20)
-        self.button2.move(200, 200)
-        self.button2.setEnabled(True)
 
     def change_save_folder(self):
         self.folderpath_dlg_3 = QFileDialog()
@@ -58,7 +65,7 @@ class MainWindow(QWidget):                           # <===
         generator_options = GeneratorOptions()
         generator_options.set_image_path(self.save_folder.text()+"/captured_data/images/")
         generator_options.set_label_path(self.save_folder.text()+"/captured_data/labels/")
-        self.cam_window = Camera_Window.App(generator_options, self.save_folder.text())
+        self.cam_window = camera_window.App(generator_options, self.save_folder.text())
         self.cam_window.show()
         self.hide()
 

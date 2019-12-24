@@ -5,7 +5,7 @@ from PyQt5 import QtGui
 from PyQt5.QtGui import *
 from shutil import copy
 import os
-from gui import AIG_Window
+from gui import aig_window
 
 
 class MainWindow(QWidget):                           # <===
@@ -26,6 +26,6 @@ class MainWindow(QWidget):                           # <===
         self.button1.move(200, 50)
 
     def done_button(self):
-        self.main_window = AIG_Window.MainWindow()
+        self.main_window = aig_window.MainWindow()
         self.main_window.show()
         self.hide()
