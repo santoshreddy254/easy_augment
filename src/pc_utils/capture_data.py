@@ -6,6 +6,14 @@ from pc_utils.helper import *
 
 
 def init_capture_data():
+    """Short summary.
+
+    Returns
+    -------
+    type
+        Description of returned object.
+
+    """
     pipeline = rs.pipeline()
     config = rs.config()
     config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
@@ -15,6 +23,21 @@ def init_capture_data():
 
 
 def get_object_points(color_frame, depth_frame):
+    """Short summary.
+
+    Parameters
+    ----------
+    color_frame : type
+        Description of parameter `color_frame`.
+    depth_frame : type
+        Description of parameter `depth_frame`.
+
+    Returns
+    -------
+    type
+        Description of returned object.
+
+    """
     pc = rs.pointcloud()
     pc.map_to(color_frame)
     pointcloud = pc.calculate(depth_frame)
@@ -22,14 +45,14 @@ def get_object_points(color_frame, depth_frame):
     verts = np.asanyarray(v).view(np.float32).reshape(-1, 3)
     cloud = pcl.PointCloud(verts)
     filtered_cloud = do_passthrough_filter(point_cloud=cloud,
-                                           name_axis='z', min_axis=0.0, max_axis=1.0)
+                                           name_axis='z', min_axis=0.0, max_axis=0.6)
     downsampled_cloud = do_voxel_grid_filter(point_cloud=filtered_cloud, LEAF_SIZE=0.004)
 
     table_cloud, objects_cloud = do_ransac_plane_segmentation(
         downsampled_cloud, max_distance=0.01)
-    project_inliers = objects_cloud.make_ProjectInliers()
-    project_inliers.set_model_type(pcl.SACMODEL_NORMAL_PARALLEL_PLANE)
-    plane = project_inliers.filter()
+    # project_inliers = objects_cloud.make_ProjectInliers()
+    # project_inliers.set_model_type(pcl.SACMODEL_NORMAL_PARALLEL_PLANE)
+    # plane = project_inliers.filter()
     colorless_cloud = XYZRGB_to_XYZ(objects_cloud)
     clusters = get_clusters(objects_cloud, tolerance=0.02, min_size=100, max_size=25000)
 
@@ -50,7 +73,20 @@ def get_object_points(color_frame, depth_frame):
     return Pixel_Coord
 
 
-def get_mask(Pixel_Coord):
+def get_mask(Pixel_Coord, color_frame):
+    """Short summary.
+
+    Parameters
+    ----------
+    Pixel_Coord : type
+        Description of parameter `Pixel_Coord`.
+
+    Returns
+    -------
+    type
+        Description of returned object.
+
+    """
     cluster_img = np.zeros((480, 640, 3), np.uint8)
     thresh = np.zeros((480, 640), 'uint8')
     x_sum = y_sum = 0
@@ -64,56 +100,6 @@ def get_mask(Pixel_Coord):
     conts = np.concatenate(contours)
     hull = [cv2.convexHull(conts, True)]
     cv2.drawContours(cluster_img, hull, -1, (255, 255, 255), -1, 8)
+    cv2.drawContours(color_frame, hull, -1, (0, 255, 0), 1, 8)
 
-    return cluster_img
-
-
-def capture_data():
-    pipeline = rs.pipeline()
-    config = rs.config()
-    config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
-    config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
-
-    # Start streaming
-    pipeline.start(config)
-
-    # Get stream profile and camera intrinsics
-    profile = pipeline.get_active_profile()
-    depth_profile = rs.video_stream_profile(profile.get_stream(rs.stream.depth))
-    depth_intrinsics = depth_profile.get_intrinsics()
-    w, h = depth_intrinsics.width, depth_intrinsics.height
-    try:
-        count = 0
-        while True:
-
-            # Wait for a coherent pair of frames: depth and color
-            frames = pipeline.wait_for_frames()
-            depth_frame = frames.get_depth_frame()
-            color_frame = frames.get_color_frame()
-            spatial = rs.spatial_filter()
-            spatial.set_option(rs.option.holes_fill, 3)
-            depth_frame = spatial.process(depth_frame)
-            if not depth_frame or not color_frame:
-                continue
-            # Convert images to numpy arrays
-            depth_image = np.asanyarray(depth_frame.get_data())
-            color_image = np.asanyarray(color_frame.get_data())
-            # Apply colormap on depth image (image must be converted to 8-bit per pixel first)
-            depth_colormap = cv2.applyColorMap(cv2.convertScaleAbs(
-                depth_image, alpha=0.03), cv2.COLORMAP_JET)
-
-            # Stack both images horizontally
-            images = np.hstack((color_image, depth_colormap))
-
-            # Show images
-            # cv2.namedWindow('RealSense', cv2.WINDOW_AUTOSIZE)
-            # cv2.imshow('RealSense', images)
-            # cv2.waitKey(1)
-            count += 1
-            # break
-
-    finally:
-
-        # Stop streaming
-        pipeline.stop()
-    return True, images
+    return color_frame, cluster_img

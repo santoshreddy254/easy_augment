@@ -23,6 +23,14 @@ class MainWindow(QWidget):                           # <===
         self.aig_form()
 
     def aig_form(self):
+        """Short summary.
+
+        Returns
+        -------
+        type
+            Description of returned object.
+
+        """
         self.home_path = str(Path.home())
 
         self.button1 = QPushButton("Capture", self)
@@ -67,12 +75,28 @@ class MainWindow(QWidget):                           # <===
         self.button5.setEnabled(True)
 
     def change_save_folder(self):
+        """Short summary.
+
+        Returns
+        -------
+        type
+            Description of returned object.
+
+        """
         self.folderpath_dlg_3 = QFileDialog()
         self.folderpath_dlg_3.setFileMode(QFileDialog.Directory)
         folderpath = self.folderpath_dlg_3.getExistingDirectory()
         self.save_folder.setText(folderpath)
 
     def capture_button(self):
+        """Short summary.
+
+        Returns
+        -------
+        type
+            Description of returned object.
+
+        """
         self.nameLabel_save_folder.show()
         self.save_folder.show()
         self.button2.show()
@@ -84,9 +108,25 @@ class MainWindow(QWidget):                           # <===
         self.button5.setEnabled(False)
 
     def annotations_button(self):
+        """Short summary.
+
+        Returns
+        -------
+        type
+            Description of returned object.
+
+        """
         pass
 
     def back_button(self):
+        """Short summary.
+
+        Returns
+        -------
+        type
+            Description of returned object.
+
+        """
         self.nameLabel_save_folder.hide()
         self.save_folder.hide()
         self.button2.hide()
@@ -98,6 +138,14 @@ class MainWindow(QWidget):                           # <===
         self.button5.setEnabled(True)
 
     def continue_button(self):
+        """Short summary.
+
+        Returns
+        -------
+        type
+            Description of returned object.
+
+        """
         if not os.path.exists(self.save_folder.text()+"/captured_data/images/"):
             os.makedirs(self.save_folder.text()+"/captured_data/images/",)
         elif os.path.exists(self.save_folder.text()+"/captured_data/images/"):
