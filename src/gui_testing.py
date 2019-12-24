@@ -14,7 +14,7 @@ import cv2
 
 def test_gui_1(qtbot):
     app = QApplication(sys.argv)
-    window = AIG_Window.MainWindow()
+    window = aig_window.MainWindow()
     qtbot.addWidget(window)
     window.num_images.setText(str(2))
     cwd = os.getcwd()
@@ -36,7 +36,7 @@ def test_gui_1(qtbot):
 
 def test_gui_2(qtbot):
     app = QApplication(sys.argv)
-    window = AIG_Window.MainWindow()
+    window = aig_window.MainWindow()
     qtbot.addWidget(window)
     window.num_images.setText(str(2))
     cwd = os.getcwd()
