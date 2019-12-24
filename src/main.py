@@ -1,64 +1,78 @@
-
-# from arguments import generator_options
-from generate_artificial_images import perform_augmentation
-from visualizer import save_visuals
-from saver import make_save_dirs
-from get_backgrounds_and_data import fetch_image_gt_paths
-from object_details import find_obj_loc_and_vals
-from generate_artificial_images import get_locations_in_image
-import cv2
-import tqdm
-from joblib import Parallel, delayed
-import multiprocessing
+import sys
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import Qt
+from PyQt5 import QtGui
+from PyQt5.QtGui import *
+from shutil import copy, rmtree
 import os
-import numpy as np
-from pascal_voc_writer import Writer
+from utils.arguments import *
+from utils.generate_artificial_images import perform_augmentation
+import gui.progress_bar
+from utils.preprocessing import resize_images, rename_images_labels, rename_backgrounds
+from pathlib import Path
+from gui import Camera_Window
 
 
-def read_files_and_visualize(data_p):
-    """
-    This function reads all the images and corresponding
-    labels and calls the visualizer.
-    :param data_p: List containing paths to images and labels
-    :return: No returns.
-    """
-    import AIG_Window
-    generator_options = AIG_Window.get_generator_options()
-    image = cv2.imread(data_p[0])
-    label = cv2.imread(data_p[1], 0)
-    name = data_p[1].split('/')[-1].split('.')[0]
-    obj_name = name[:-4]
-    label_value = sorted(np.unique(label))[0]
-    obj_details = find_obj_loc_and_vals(image, label,
-                                        label_value, obj_name)
-    obj_locations = get_locations_in_image(obj_details['obj_loc'])
-    rect_points = [min(obj_locations[:, 1]), min(obj_locations[:, 0]),
-                   max(obj_locations[:, 1]), max(obj_locations[:, 0])]
-    obj_label = [[obj_name] + rect_points]
-    save_visuals(image, label, obj_label, name)
+class MainWindow(QWidget):                           # <===
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("b-it-bots -- Data Augmentor")
+        self.setWindowIcon(QtGui.QIcon(os.path.dirname(
+            os.path.realpath(__file__))+'/data/b-it-bots.jpg'))
+        self.setGeometry(100, 100, 650, 300)
+        self.aig_form()
 
-    if generator_options.save_obj_det_label:
-        img_path = data_p[0]
-        img_dimension = generator_options.image_dimension
-        writer = Writer(img_path, img_dimension[1],
-                        img_dimension[0])
-        [writer.addObject(*l) for l in obj_label]
-        save_path = os.path.join(
-            generator_options.obj_det_save_path,
-            generator_options.name_format %
-            name + '.xml')
-        writer.save(save_path)
+    def aig_form(self):
+        self.home_path = str(Path.home())
+
+        self.nameLabel_save_folder = QLabel(self)
+        self.nameLabel_save_folder.setText('Save folder path:')
+        self.nameLabel_save_folder.move(50, 100)
+        self.nameLabel_save_folder.resize(200, 40)
+        self.save_folder = QLineEdit(self)
+        self.save_folder.setText(self.home_path)
+        self.save_folder.move(300, 100)
+        self.save_folder.resize(200, 40)
+        self.button2 = QPushButton("Change", self)
+        self.button2.clicked.connect(self.change_save_folder)
+        self.button2.move(520, 110)
+        self.button2.resize(100, 20)
+
+        self.button1 = QPushButton("Ok", self)
+        self.button1.clicked.connect(self.ok_button)
+        self.button1.resize(150, 20)
+        self.button1.move(200, 250)
+        self.button1.setEnabled(True)
+
+    def change_save_folder(self):
+        self.folderpath_dlg_3 = QFileDialog()
+        self.folderpath_dlg_3.setFileMode(QFileDialog.Directory)
+        folderpath = self.folderpath_dlg_3.getExistingDirectory()
+        self.save_folder.setText(folderpath)
+
+    def ok_button(self):
+        if not os.path.exists(self.save_folder.text()+"/captured_data/images/"):
+            os.makedirs(self.save_folder.text()+"/captured_data/images/",)
+        elif os.path.exists(self.save_folder.text()+"/captured_data/images/"):
+            rmtree(self.save_folder.text()+"/captured_data/images/")
+            os.makedirs(self.save_folder.text()+"/captured_data/images/",)
+        if not os.path.exists(self.save_folder.text()+"/captured_data/labels/"):
+            os.makedirs(self.save_folder.text()+"/captured_data/labels/",)
+        elif os.path.exists(self.save_folder.text()+"/captured_data/labels/"):
+            rmtree(self.save_folder.text()+"/captured_data/labels/")
+            os.makedirs(self.save_folder.text()+"/captured_data/labels/",)
+
+        generator_options = GeneratorOptions()
+        generator_options.set_image_path(self.save_folder.text()+"/captured_data/images/")
+        generator_options.set_label_path(self.save_folder.text()+"/captured_data/labels/")
+        self.cam_window = Camera_Window.App(generator_options, self.save_folder.text())
+        self.cam_window.show()
+        self.hide()
 
 
-if __name__ == '__main__':
-    import AIG_Window
-    generator_options = AIG_Window.get_generator_options()
-    if generator_options.mode == 1:
-        perform_augmentation()
-    else:
-        make_save_dirs()
-        data_paths = fetch_image_gt_paths()
-        num_cores = multiprocessing.cpu_count()
-        Parallel(n_jobs=num_cores)(delayed(read_files_and_visualize)(p)
-                                   for p in tqdm.tqdm(
-            data_paths, desc='Saving visuals'))
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+
+    app.exec_()

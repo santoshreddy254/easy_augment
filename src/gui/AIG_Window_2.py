@@ -7,10 +7,10 @@ from shutil import copy, rmtree
 import os
 from utils.arguments import *
 from utils.generate_artificial_images import perform_augmentation
-import progress_bar
+from gui import progress_bar
 from utils.preprocessing import resize_images, rename_images_labels, rename_backgrounds
 from pathlib import Path
-import Start_gui
+import main
 
 
 class MainWindow(QWidget):                           # <===

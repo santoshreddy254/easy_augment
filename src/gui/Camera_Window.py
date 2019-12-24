@@ -11,7 +11,7 @@ import numpy as np
 import cv2
 import pcl
 import os
-import AIG_Window_2
+from gui import AIG_Window_2
 import copy
 
 
