@@ -11,7 +11,7 @@ import numpy as np
 import cv2
 import pcl
 import os
-import AIG_Window_2
+from gui import aig_window_2
 import copy
 
 
@@ -37,17 +37,17 @@ class Thread(QThread):
             spatial.set_option(rs.option.holes_fill, 3)
             depth_frame = spatial.process(depth_frame)
             Pixel_Coord = capture_data.get_object_points(color_frame, depth_frame)
+            depth_image = np.asanyarray(depth_frame.get_data())
+            color_image = np.asanyarray(color_frame.get_data())
+            color_image_copy = copy.deepcopy(color_image)
             if len(Pixel_Coord) > 0:
-                object_mask = capture_data.get_mask(Pixel_Coord)
+                color_image_copy, object_mask = capture_data.get_mask(Pixel_Coord, color_image_copy)
             else:
                 object_mask = np.zeros((480, 640, 3), np.uint8)
             if not depth_frame or not color_frame:
                 continue
-            depth_image = np.asanyarray(depth_frame.get_data())
-            color_image = np.asanyarray(color_frame.get_data())
-            color_image_copy = copy.deepcopy(color_image)
-            for i in Pixel_Coord:
-                cv2.circle(color_image_copy, (int(i[0]), int(i[1])), 2, (0, 255, 0), -1)
+            # for i in Pixel_Coord:
+            #     cv2.circle(color_image_copy, (int(i[0]), int(i[1])), 2, (0, 255, 0), -1)
             depth_colormap = cv2.applyColorMap(cv2.convertScaleAbs(
                 depth_image, alpha=0.03), cv2.COLORMAP_JET)
             images = np.hstack((color_image_copy, object_mask))
@@ -171,7 +171,7 @@ class App(QWidget):
         self.generator_options.set_labels_file_path(
             self.save_folder_path+"/captured_data/labels.txt")
         self.generator_options.set_max_objects(len(self.label_list))
-        self.aig_window = AIG_Window_2.MainWindow(self.generator_options)
+        self.aig_window = aig_window_2.MainWindow(self.generator_options)
         self.aig_window.show()
         self.th.pipeline.stop()
         self.hide()

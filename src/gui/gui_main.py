@@ -7,10 +7,10 @@ from shutil import copy, rmtree
 import os
 from utils.arguments import *
 from utils.generate_artificial_images import perform_augmentation
-import progress_bar
+import gui.progress_bar
 from utils.preprocessing import resize_images, rename_images_labels, rename_backgrounds
 from pathlib import Path
-import Camera_Window
+from gui import camera_window
 
 
 class MainWindow(QWidget):                           # <===
@@ -25,24 +25,17 @@ class MainWindow(QWidget):                           # <===
     def aig_form(self):
         self.home_path = str(Path.home())
 
-        self.nameLabel_save_folder = QLabel(self)
-        self.nameLabel_save_folder.setText('Save folder path:')
-        self.nameLabel_save_folder.move(50, 100)
-        self.nameLabel_save_folder.resize(200, 40)
-        self.save_folder = QLineEdit(self)
-        self.save_folder.setText(self.home_path)
-        self.save_folder.move(300, 100)
-        self.save_folder.resize(200, 40)
-        self.button2 = QPushButton("Change", self)
-        self.button2.clicked.connect(self.change_save_folder)
-        self.button2.move(520, 110)
-        self.button2.resize(100, 20)
-
-        self.button1 = QPushButton("Ok", self)
+        self.button1 = QPushButton("Capture", self)
         self.button1.clicked.connect(self.ok_button)
         self.button1.resize(150, 20)
         self.button1.move(200, 250)
         self.button1.setEnabled(True)
+
+        self.button2 = QPushButton("Have Annotations", self)
+        self.button2.clicked.connect(self.ok_button)
+        self.button2.resize(150, 20)
+        self.button2.move(200, 200)
+        self.button2.setEnabled(True)
 
     def change_save_folder(self):
         self.folderpath_dlg_3 = QFileDialog()

@@ -1,6 +1,6 @@
 import sys
 import os
-import AIG_Window
+from gui import aig_window
 from time import sleep
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt, QTimer
@@ -14,7 +14,7 @@ import cv2
 
 def test_gui_1(qtbot):
     app = QApplication(sys.argv)
-    window = AIG_Window.MainWindow()
+    window = aig_window.MainWindow()
     qtbot.addWidget(window)
     window.num_images.setText(str(2))
     cwd = os.getcwd()
@@ -36,7 +36,7 @@ def test_gui_1(qtbot):
 
 def test_gui_2(qtbot):
     app = QApplication(sys.argv)
-    window = AIG_Window.MainWindow()
+    window = aig_window.MainWindow()
     qtbot.addWidget(window)
     window.num_images.setText(str(2))
     cwd = os.getcwd()

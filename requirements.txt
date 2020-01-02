@@ -4,6 +4,7 @@ tqdm
 joblib
 scipy
 matplotlib
+imutils
 numpy>=1.16
 pascal-voc-tools
 pascal-voc-writer
