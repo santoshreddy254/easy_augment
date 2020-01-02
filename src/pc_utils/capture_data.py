@@ -3,6 +3,7 @@ import numpy as np
 import cv2
 import pcl
 from pc_utils.helper import *
+import imutils
 
 
 def init_capture_data():
@@ -92,14 +93,39 @@ def get_mask(Pixel_Coord, color_frame):
     x_sum = y_sum = 0
     for px in Pixel_Coord:
         thresh[int(px[1]), int(px[0])] = 255
-        x_sum += px[0]
-        y_sum += px[1]
-    kernel = np.ones((30, 30), np.uint8)
+    kernel = np.ones((3, 3), np.uint8)
     im_opening = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
-    contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv2.findContours(im_opening, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     conts = np.concatenate(contours)
     hull = [cv2.convexHull(conts, True)]
-    cv2.drawContours(cluster_img, hull, -1, (255, 255, 255), -1, 8)
-    cv2.drawContours(color_frame, hull, -1, (0, 255, 0), 1, 8)
+    Pixel_Coord = np.asarray(Pixel_Coord)
+    x_min = np.min(Pixel_Coord[:, 0])
+    x_max = np.max(Pixel_Coord[:, 0])
 
+    y_min = np.min(Pixel_Coord[:, 1])
+    y_max = np.max(Pixel_Coord[:, 1])
+
+    # color_frame_crop = color_frame[int(x_min)-10:int(x_max)+10, int(y_min)-10:int(y_max)+10]
+    # # cv2.imshow("croped", color_frame_crop)
+    # gray = cv2.cvtColor(color_frame_crop, cv2.COLOR_BGR2GRAY)
+    # bw = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+    #                            cv2.THRESH_BINARY, 11, 2)
+    # # edged = cv2.Canny(bw, th/2, th)
+    # edged = cv2.Canny(bw, 30, 200)
+    # cnts, h = cv2.findContours(edged, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    # # cnts = imutils.grab_contours(cnts)
+    # cnts = np.concatenate(cnts)
+    # hull2 = [cv2.convexHull(cnts, True)]
+    # hull2 = np.asarray(hull2)
+    # hull2[0][:, 0][:, 0] += int(x_min)
+    # hull2[0][:, 0][:, 1] += int(y_min)
+    # hull2 = list(hull2)
+    # cnts = sorted(cnts, key=cv2.contourArea, reverse=True)[:10]
+    color_frame = cv2.rectangle(color_frame, (int(x_min)-10, int(y_min)-10),
+                                (int(x_max)+10, int(y_max)+10), (0, 255, 0), 2)
+    cv2.drawContours(cluster_img, hull, -1, (255, 255, 255), -1, 8)
+    # cv2.drawContours(color_frame, hull2, -1, (0, 255, 255), 2, 8)
+    cv2.drawContours(color_frame, hull, -1, (0, 255, 0), 2, 8)
+    # cv2.waitKey(1)
+    # cv2.destroyAllWindows()
     return color_frame, cluster_img

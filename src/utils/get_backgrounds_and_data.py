@@ -6,7 +6,6 @@ from utils.populate_src import populate_source
 import numpy as np
 
 
-
 def fetch_background_images(generator_options):
     """
     :return: Returns a list of background images.
@@ -23,11 +22,11 @@ def fetch_background_images(generator_options):
         img = cv2.imread(file)
         if list(img.shape[0:2]) != generator_options.get_image_dimension():
             logging.warning('Background dimension {} not expected'.format(
-                        img.shape))
+                img.shape))
             logging.warning('Rescaling background to shape: {}'.format(
                 tuple(generator_options.get_image_dimension() + [3])))
             img = cv2.resize(img, tuple(reversed(
-                        generator_options.get_image_dimension())))
+                generator_options.get_image_dimension())))
 
         background_imgs.append(img)
 
@@ -62,9 +61,9 @@ def fetch_image_gt_paths(generator_options):
                 for files in sorted(os.listdir(cls_path)):
                     files_counter += 1
                     obj_files.append([os.path.join(
-                                generator_options.get_image_path(), item,
-                                files.split('.')[0] + generator_options.get_image_type()),
-                                os.path.join(generator_options.get_label_path(), item, files)])
+                        generator_options.get_image_path(), item,
+                        files.split('.')[0] + generator_options.get_image_type()),
+                        os.path.join(generator_options.get_label_path(), item, files)])
 
                     object_files_dict[item] = obj_files.copy()
             else:
@@ -73,9 +72,9 @@ def fetch_image_gt_paths(generator_options):
                 if object_files_dict.get(cls_name, None) is None:
                     object_files_dict[cls_name] = list()
                 object_files_dict[cls_name].append([os.path.join(
-                        generator_options.get_image_path(),
-                        item.split('.')[0] + generator_options.get_image_type()),
-                        os.path.join(generator_options.get_label_path(), item)])
+                    generator_options.get_image_path(),
+                    item.split('.')[0] + generator_options.get_image_type()),
+                    os.path.join(generator_options.get_label_path(), item)])
 
         return files_counter, object_files_dict
 
@@ -92,7 +91,7 @@ def fetch_image_gt_paths(generator_options):
         return data_paths
 
 
-def read_image_labels(object_files_dict,generator_options):
+def read_image_labels(object_files_dict, generator_options):
     """
 
     :param object_files_dict: A dictionary which maps object names
