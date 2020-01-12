@@ -38,19 +38,29 @@ cd realsense_augmentor
 python3 src/main.py
 ```
 1) Start page will be as below and select the path to save the captured images.
-![alt text](https://github.com/santoshreddy254/realsense_augmentor/blob/master/src/data/window_01.png)
-2) Next window will have image and mask of corresponding object. Capture as many as images per classe.
+![alt text](https://github.com/santoshreddy254/realsense_augmentor/blob/master/src/data/main_window.png)
+2) On selecting capture next window will look like
+![alt text](https://github.com/santoshreddy254/realsense_augmentor/blob/master/src/data/capture_window.png)
+3) On selectin Have Annotations
+![alt text](https://github.com/santoshreddy254/realsense_augmentor/blob/master/src/data/annotate_window.png)
+Steps after selecting capture option and selecting save path
+4) Next window will have image and mask of corresponding object. Capture as many as images per classe.
 ![alt text](https://github.com/santoshreddy254/realsense_augmentor/blob/master/src/data/window_02-1.png)
-3) Click add to add new class label.
+5) Click add to add new class label.
 ![alt text](https://github.com/santoshreddy254/realsense_augmentor/blob/master/src/data/window_02-2.png)
-4) Click save to save the current displyed image and semantic label.
-5) Click finish once done with capturing all the images.
-6) Folder name \textbf{captured_data} in selected save path will have images, labels and labels.txt
-6) Input parameters to generate artificial images need to be filled next window.
+6) Click save to save the current displyed image and semantic label.
+7) Click finish once done with capturing all the images.
+8) Folder name \textbf{captured_data} in selected save path will have images, labels and labels.txt
+9) Input parameters to generate artificial images need to be filled next window.
 ![alt text](https://github.com/santoshreddy254/realsense_augmentor/blob/master/src/data/window_03.png)
-7) Click OK once setting up the parameters.
-8) Folder name \textbf{augmented} in selected save path will have artificial images.
+10) Click OK once setting up the parameters.
+11) Folder name \textbf{augmented} in selected save path will have artificial images.
 
+Steps after selecting Have annotations
+12) Select the location of images and corresponding annotations
+13) Select save path
+14) Select labels.txt file path
+15) Follow the steps from Step 9
 
 ## Release History
 
