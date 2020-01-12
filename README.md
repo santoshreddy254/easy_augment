@@ -35,7 +35,7 @@ cd realsense_augmentor
 
 ```sh
 cd realsense_augmentor
-python3 src/Start_gui.py
+python3 src/main.py
 ```
 1) Start page will be as below and select the path to save the captured images.
 ![alt text](https://github.com/santoshreddy254/realsense_augmentor/blob/master/src/data/window_01.png)
