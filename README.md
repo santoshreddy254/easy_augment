@@ -35,7 +35,7 @@ cd realsense_augmentor
 
 ```sh
 cd realsense_augmentor
-python3 src/Start_gui.py
+python3 src/main.py
 ```
 1) Start page will be as below and select the path to save the captured images.
 ![alt text](https://github.com/santoshreddy254/realsense_augmentor/blob/master/src/data/window_01.png)
@@ -59,9 +59,10 @@ python3 src/Start_gui.py
     * First release for crowd testing
 
 ## Contributors
-* Santosh Muthireddy – santoshreddy45@yahoo.com [https://github.com/santoshreddy254]
-* Naresh Kumar Gurulingan - https://github.com/NareshGuru77
-* M.Sc Deebul Nair - https://github.com/deebuls
+* Santosh Muthireddy              – https://github.com/santoshreddy254
+* Naresh Kumar Gurulingan         - https://github.com/NareshGuru77
+* Deepan Chakravarthi Padmanabhan - https://github.com/DeepanChakravarthiPadmanabhan
+* M.Sc Deebul Nair                - https://github.com/deebuls
 
 
 Distributed under the MLP license. See ``LICENSE`` for more information.
