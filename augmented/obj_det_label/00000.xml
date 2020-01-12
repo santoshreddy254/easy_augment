@@ -12,15 +12,15 @@
     </size>
     <segmented>0</segmented>
     <object>
-        <name>cube</name>
+        <name>chilisausce</name>
         <pose>Unspecified</pose>
         <truncated>0</truncated>
         <difficult>0</difficult>
         <bndbox>
-            <xmin>0</xmin>
-            <ymin>108</ymin>
-            <xmax>237</xmax>
-            <ymax>295</ymax>
+            <xmin>216</xmin>
+            <ymin>112</ymin>
+            <xmax>330</xmax>
+            <ymax>380</ymax>
         </bndbox>
     </object>
 </annotation>
