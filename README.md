@@ -75,6 +75,6 @@ Steps after selecting Have annotations
 * M.Sc Deebul Nair                - https://github.com/deebuls
 
 
-Distributed under the MLP license. See ``LICENSE`` for more information.
+Distributed under the MPL license. See ``LICENSE`` for more information.
 
 
