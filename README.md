@@ -3,6 +3,10 @@
 
 [![Build Status](https://travis-ci.org/santoshreddy254/realsense_augmentor.svg?branch=master)](https://travis-ci.org/santoshreddy254/realsense_augmentor)
 
+```
+Build error due to display problems in travis. 
+```
+
 > End to end software to capture new objects using RGBD camera and augment them to get a annotated dataset to train deep nets
 
 1) Pipeline to artificial generate annotated data for training deep learning models.
@@ -26,13 +30,13 @@ generate semantic labels of the captured image and then generate the artificial 
 Linux:
 
 ```sh
-git clone https://github.com/santoshreddy254/realsense_augmentor.git
-cd realsense_augmentor
+git clone https://github.com/santoshreddy254/easy_augment.git
+cd easy_augment
 ./setup.sh
 ```
 ### From pip
 ```
-pip3 install easy-augment
+pip3 install easy-augment --user
 ```
 
 ## Usage example
