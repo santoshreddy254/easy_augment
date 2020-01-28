@@ -19,9 +19,10 @@ generate semantic labels of the captured image and then generate the artificial 
 
 ## Limitations
 1) Number of classes captured should be more than or equal to 2.
+2) Only one object in the scene to segment, not supported for multiple objects.
 
 ## Installation
-
+### Build from source
 Linux:
 
 ```sh
@@ -29,7 +30,10 @@ git clone https://github.com/santoshreddy254/realsense_augmentor.git
 cd realsense_augmentor
 ./setup.sh
 ```
-
+### From pip
+```
+pip3 install easy-augment
+```
 
 ## Usage example
 
