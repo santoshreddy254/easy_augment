@@ -65,16 +65,22 @@ Steps after selecting capture option and selecting save path
 11) Folder name \textbf{augmented} in selected save path will have artificial images.
 
 Steps after selecting Have annotations
+
 12) Select the location of images and corresponding annotations
+
 13) Select save path
+
 14) Select labels.txt file path
+
 15) Follow the steps from Step 9
 
 ## Release History
-
-
+* 1.0.2
+    * Fixed bugs with augmeting data with labelme data.
+* 1.0.1
+    * Released on pypi.
 * 1.0.0
-    * First release for crowd testing
+    * First release for crowd testing.
 
 ## Contributors
 * Santosh Muthireddy              – https://github.com/santoshreddy254
