@@ -45,8 +45,10 @@ def get_object_points(color_frame, depth_frame):
     v = pointcloud.get_vertices()
     verts = np.asanyarray(v).view(np.float32).reshape(-1, 3)
     cloud = pcl.PointCloud(verts)
+    # pcl.save(cloud, "init_cld.ply")
     filtered_cloud = do_passthrough_filter(point_cloud=cloud,
                                            name_axis='z', min_axis=0.0, max_axis=0.6)
+    # pcl.save(filtered_cloud, "filt_cld.ply")
     downsampled_cloud = do_voxel_grid_filter(point_cloud=filtered_cloud, LEAF_SIZE=0.004)
 
     table_cloud, objects_cloud = do_ransac_plane_segmentation(
@@ -61,6 +63,7 @@ def get_object_points(color_frame, depth_frame):
     # Create a cloud with each cluster of points having the same color
     clusters_cloud = pcl.PointCloud()
     clusters_cloud.from_list(colored_points)
+    # pcl.save(clusters_cloud, "clt_cld.ply")
     color_intrin = color_frame.profile.as_video_stream_profile().intrinsics
     depth_to_color_extrin = depth_frame.profile.get_extrinsics_to(color_frame.profile)
     Pixel_Coord = []
