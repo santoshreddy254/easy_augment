@@ -15,6 +15,7 @@ from pathlib import Path
 from gui import camera_window, aig_window_2
 
 
+
 class MainWindow(QWidget):                           # <===
     def __init__(self):
         super().__init__()
@@ -276,6 +277,21 @@ class MainWindow(QWidget):                           # <===
         elif os.path.exists(self.save_folder.text()+"/captured_data/labels/"):
             rmtree(self.save_folder.text()+"/captured_data/labels/")
             os.makedirs(self.save_folder.text()+"/captured_data/labels/",)
+        if not os.path.exists(self.save_folder.text()+"/captured_data/obj_det_label/"):
+            os.makedirs(self.save_folder.text()+"/captured_data/obj_det_label/",)
+        elif os.path.exists(self.save_folder.text()+"/captured_data/obj_det_label/"):
+            rmtree(self.save_folder.text()+"/captured_data/obj_det_label/")
+            os.makedirs(self.save_folder.text()+"/captured_data/obj_det_label/",)
+        if not os.path.exists(self.save_folder.text()+"/captured_data/pointclouds/"):
+            os.makedirs(self.save_folder.text()+"/captured_data/pointclouds/",)
+        elif os.path.exists(self.save_folder.text()+"/captured_data/pointclouds/"):
+            rmtree(self.save_folder.text()+"/captured_data/pointclouds/")
+            os.makedirs(self.save_folder.text()+"/captured_data/pointclouds/",)
+        if not os.path.exists(self.save_folder.text()+"/captured_data/frame_data/"):
+            os.makedirs(self.save_folder.text()+"/captured_data/frame_data/",)
+        elif os.path.exists(self.save_folder.text()+"/captured_data/frame_data/"):
+            rmtree(self.save_folder.text()+"/captured_data/frame_data/")
+            os.makedirs(self.save_folder.text()+"/captured_data/frame_data/",)
 
         generator_options = GeneratorOptions()
         generator_options.set_image_path(self.save_folder.text()+"/captured_data/images/")

@@ -4,6 +4,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+from pascal_voc_writer import Writer
 import cv2
 from pc_utils import capture_data
 import pyrealsense2 as rs
@@ -36,14 +37,15 @@ class Thread(QThread):
             spatial = rs.spatial_filter()
             spatial.set_option(rs.option.holes_fill, 3)
             depth_frame = spatial.process(depth_frame)
-            Pixel_Coord = capture_data.get_object_points(color_frame, depth_frame)
+            Pixel_Coord, segmented_cloud = capture_data.get_object_points(color_frame, depth_frame)
             depth_image = np.asanyarray(depth_frame.get_data())
             color_image = np.asanyarray(color_frame.get_data())
             color_image_copy = copy.deepcopy(color_image)
             if len(Pixel_Coord) > 0:
-                color_image_copy, object_mask = capture_data.get_mask(Pixel_Coord, color_image_copy)
+                color_image_copy, object_mask, bbox_coordinates = capture_data.get_mask(Pixel_Coord, color_image_copy)
             else:
                 object_mask = np.zeros((480, 640, 3), np.uint8)
+                bbox_coordinates = [0,0,640,480]
             if not depth_frame or not color_frame:
                 continue
             # for i in Pixel_Coord:
@@ -52,6 +54,8 @@ class Thread(QThread):
                 depth_image, alpha=0.03), cv2.COLORMAP_JET)
             images = np.hstack((color_image_copy, object_mask))
             images_raw = np.hstack((color_image, object_mask))
+            full_data = [images_raw,bbox_coordinates,segmented_cloud,depth_frame]
+            full_data = np.array(full_data)
 
             rgbImage = cv2.cvtColor(images, cv2.COLOR_BGR2RGB)
             h, w, ch = rgbImage.shape
@@ -60,7 +64,7 @@ class Thread(QThread):
                 rgbImage.data, w, h, bytesPerLine, QtGui.QImage.Format_RGB888)
             p = convertToQtFormat.scaled(640, 240, Qt.KeepAspectRatio)
             self.changePixmap.emit(p)
-            self.imagesPixmap.emit(images_raw)
+            self.imagesPixmap.emit(full_data)
 
 
 class App(QWidget):
@@ -85,18 +89,36 @@ class App(QWidget):
         self.label.setPixmap(QPixmap.fromImage(image))
 
     @pyqtSlot(np.ndarray)
-    def capture_image(self, image):
+    def capture_image(self, full_data):
         if self.flag:
             self._image_counter[self.label_list.index(str(self.label_box.currentText()))] += 1
             name = str(self.label_box.currentText(
             ))+"_{}.png".format(self._image_counter[self.label_list.index(str(self.label_box.currentText()))])
-            rgb_img = image[:, :640]
-            mask_img = image[:, 640:]
+            annotation_name = str(self.label_box.currentText(
+                        ))+"_{}.xml".format(self._image_counter[self.label_list.index(str(self.label_box.currentText()))])
+            pointcloud_name = str(self.label_box.currentText(
+                        ))+"_{}.ply".format(self._image_counter[self.label_list.index(str(self.label_box.currentText()))])
+            frame_name = str(self.label_box.currentText(
+                        ))+"_{}".format(self._image_counter[self.label_list.index(str(self.label_box.currentText()))])
+
+            rgb_img = full_data[0][:, :640]
+            mask_img = full_data[0][:, 640:]
+            bbox_coordinates = full_data[1]
             obj_pixels = np.where(mask_img == 255)
             mask_img[obj_pixels] = self.label_list.index(str(self.label_box.currentText()))+1
-            cv2.imwrite(self.generator_options.get_image_path()+name, rgb_img)
-            cv2.imwrite(self.generator_options.get_label_path()+name, mask_img)
-
+            if self.save_rgb:
+                cv2.imwrite(self.generator_options.get_image_path()+name, rgb_img)
+            if self.save_semantic_label:
+                cv2.imwrite(self.generator_options.get_label_path()+name, mask_img)
+            if self.save_bbox:
+                writer = Writer(self.generator_options.get_image_path()+name,rgb_img.shape[0],rgb_img.shape[1])
+                writer.addObject(str(self.label_box.currentText()),bbox_coordinates[0],bbox_coordinates[2],bbox_coordinates[2],bbox_coordinates[3])
+                writer.save(self.save_folder_path+"/captured_data/obj_det_label/"+annotation_name)
+            if self.save_pointcloud:
+                pcl.save(full_data[2],self.save_folder_path+"/captured_data/pointclouds/"+pointcloud_name)
+            if self.save_depth:
+                saver = rs.save_single_frameset(filename=self.save_folder_path+"/captured_data/frame_data/"+frame_name)
+                saver.process(full_data[3])
             self.flag = False
 
     def initUI(self):
@@ -125,6 +147,45 @@ class App(QWidget):
         self.label_box.move(300, 260)
         for i in self.label_list:
             self.label_box.addItem(i)
+
+
+        self.rgb_checkbox = QCheckBox("RGB",self)
+        self.rgb_checkbox.move(50,300)
+        self.rgb_checkbox.setChecked(True)
+        self.save_rgb = True
+        self.rgb_checkbox.stateChanged.connect(lambda:self.clickbox(self.rgb_checkbox))
+
+
+        self.semantic_label_checkbox = QCheckBox("Semantic label",self)
+        self.semantic_label_checkbox.move(150,300)
+        self.semantic_label_checkbox.setChecked(True)
+        self.save_semantic_label = True
+        self.semantic_label_checkbox.stateChanged.connect(lambda:self.clickbox(self.semantic_label_checkbox))
+
+        self.pointcloud_checkbox = QCheckBox("PointCloud",self)
+        self.pointcloud_checkbox.setChecked(True)
+        self.save_pointcloud = True
+        self.pointcloud_checkbox.move(300,300)
+        self.pointcloud_checkbox.stateChanged.connect(lambda:self.clickbox(self.pointcloud_checkbox))
+
+
+
+        self.depth_checkbox = QCheckBox("Depth",self)
+        self.depth_checkbox.setChecked(True)
+        self.save_depth = True
+        self.depth_checkbox.move(450,300)
+        self.depth_checkbox.stateChanged.connect(lambda:self.clickbox(self.depth_checkbox))
+
+
+
+        self.bbox_checkbox = QCheckBox("Bounding Box",self)
+        self.bbox_checkbox.setChecked(True)
+        self.save_bbox = True
+        self.bbox_checkbox.move(550,300)
+        self.bbox_checkbox.stateChanged.connect(lambda:self.clickbox(self.bbox_checkbox))
+
+
+
         self.button1 = QPushButton("Save", self)
         self.button1.setEnabled(False)
         self.button1.clicked.connect(self.capture_img)
@@ -155,7 +216,8 @@ class App(QWidget):
             # self.flag = False
 
     def button_status(self):
-        if len(self.label_list) > 0:
+        if len(self.label_list) > 0 and (self.save_rgb or self.save_pointcloud
+        or self.save_depth or self.save_bbox or self.save_semantic_label):
             self.button1.setEnabled(True)
             self.button2.setEnabled(True)
         else:
@@ -175,6 +237,36 @@ class App(QWidget):
         self.aig_window.show()
         self.th.pipeline.stop()
         self.hide()
+
+    def clickbox(self,checkbox):
+        if checkbox.text() == "RGB":
+            if checkbox.isChecked() == True:
+                self.save_rgb = True
+            elif checkbox.isChecked() == False:
+                self.save_rgb = False
+        elif checkbox.text() == "Semantic label":
+            if checkbox.isChecked() == True:
+                self.save_semantic_label = True
+            elif checkbox.isChecked() == False:
+                self.save_semantic_label = False
+        elif checkbox.text() == "PointCloud":
+            if checkbox.isChecked() == True:
+                self.save_pointcloud = True
+            elif checkbox.isChecked() == False:
+                self.save_pointcloud = False
+        elif checkbox.text() == "Depth":
+            if checkbox.isChecked() == True:
+                self.save_depth = True
+            elif checkbox.isChecked() == False:
+                self.save_depth = False
+        elif checkbox.text() == "Bounding Box":
+            if checkbox.isChecked() == True:
+                self.save_bbox = True
+            elif checkbox.isChecked() == False:
+                self.save_bbox = False
+        self.button_status()
+
+
 
 
 if __name__ == '__main__':

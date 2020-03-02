@@ -55,6 +55,17 @@ class MainWindow(QWidget):                           # <===
             rmtree(self.save_folder.text()+"/captured_data/labels/")
             os.makedirs(self.save_folder.text()+"/captured_data/labels/",)
 
+        if not os.path.exists(self.save_folder.text()+"/captured_data/obj_det_label/"):
+            os.makedirs(self.save_folder.text()+"/captured_data/obj_det_label/",)
+        elif os.path.exists(self.save_folder.text()+"/captured_data/obj_det_label/"):
+            rmtree(self.save_folder.text()+"/captured_data/obj_det_label/")
+            os.makedirs(self.save_folder.text()+"/captured_data/obj_det_label/",)
+        if not os.path.exists(self.save_folder.text()+"/captured_data/pointclouds/"):
+            os.makedirs(self.save_folder.text()+"/captured_data/pointclouds/",)
+        elif os.path.exists(self.save_folder.text()+"/captured_data/pointclouds/"):
+            rmtree(self.save_folder.text()+"/captured_data/pointclouds/")
+            os.makedirs(self.save_folder.text()+"/captured_data/pointclouds/",)
+
         generator_options = GeneratorOptions()
         generator_options.set_image_path(self.save_folder.text()+"/captured_data/images/")
         generator_options.set_label_path(self.save_folder.text()+"/captured_data/labels/")
