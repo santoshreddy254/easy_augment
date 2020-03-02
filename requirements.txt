@@ -11,3 +11,4 @@ pascal-voc-writer
 pytest-qt
 pyrealsense2
 python-pcl
+labelme
