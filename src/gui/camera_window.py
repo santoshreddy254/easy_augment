@@ -106,15 +106,19 @@ class App(QWidget):
             bbox_coordinates = full_data[1]
             obj_pixels = np.where(mask_img == 255)
             mask_img[obj_pixels] = self.label_list.index(str(self.label_box.currentText()))+1
-            cv2.imwrite(self.generator_options.get_image_path()+name, rgb_img)
-            cv2.imwrite(self.generator_options.get_label_path()+name, mask_img)
-            writer = Writer(self.generator_options.get_image_path()+name,rgb_img.shape[0],rgb_img.shape[1])
-            writer.addObject(str(self.label_box.currentText()),bbox_coordinates[0],bbox_coordinates[2],bbox_coordinates[2],bbox_coordinates[3])
-            writer.save(self.save_folder_path+"/captured_data/obj_det_label/"+annotation_name)
-            pcl.save(full_data[2],self.save_folder_path+"/captured_data/pointclouds/"+pointcloud_name)
-            saver = rs.save_single_frameset(filename=self.save_folder_path+"/captured_data/frame_data/"+frame_name)
-            saver.process(full_data[3])
-            # print(type(full_data[3]))
+            if self.save_rgb:
+                cv2.imwrite(self.generator_options.get_image_path()+name, rgb_img)
+            if self.save_semantic_label:
+                cv2.imwrite(self.generator_options.get_label_path()+name, mask_img)
+            if self.save_bbox:
+                writer = Writer(self.generator_options.get_image_path()+name,rgb_img.shape[0],rgb_img.shape[1])
+                writer.addObject(str(self.label_box.currentText()),bbox_coordinates[0],bbox_coordinates[2],bbox_coordinates[2],bbox_coordinates[3])
+                writer.save(self.save_folder_path+"/captured_data/obj_det_label/"+annotation_name)
+            if self.save_pointcloud:
+                pcl.save(full_data[2],self.save_folder_path+"/captured_data/pointclouds/"+pointcloud_name)
+            if self.save_depth:
+                saver = rs.save_single_frameset(filename=self.save_folder_path+"/captured_data/frame_data/"+frame_name)
+                saver.process(full_data[3])
             self.flag = False
 
     def initUI(self):
@@ -143,6 +147,45 @@ class App(QWidget):
         self.label_box.move(300, 260)
         for i in self.label_list:
             self.label_box.addItem(i)
+
+
+        self.rgb_checkbox = QCheckBox("RGB",self)
+        self.rgb_checkbox.move(50,300)
+        self.rgb_checkbox.setChecked(True)
+        self.save_rgb = True
+        self.rgb_checkbox.stateChanged.connect(lambda:self.clickbox(self.rgb_checkbox))
+
+
+        self.semantic_label_checkbox = QCheckBox("Semantic label",self)
+        self.semantic_label_checkbox.move(150,300)
+        self.semantic_label_checkbox.setChecked(True)
+        self.save_semantic_label = True
+        self.semantic_label_checkbox.stateChanged.connect(lambda:self.clickbox(self.semantic_label_checkbox))
+
+        self.pointcloud_checkbox = QCheckBox("PointCloud",self)
+        self.pointcloud_checkbox.setChecked(True)
+        self.save_pointcloud = True
+        self.pointcloud_checkbox.move(300,300)
+        self.pointcloud_checkbox.stateChanged.connect(lambda:self.clickbox(self.pointcloud_checkbox))
+
+
+
+        self.depth_checkbox = QCheckBox("Depth",self)
+        self.depth_checkbox.setChecked(True)
+        self.save_depth = True
+        self.depth_checkbox.move(450,300)
+        self.depth_checkbox.stateChanged.connect(lambda:self.clickbox(self.depth_checkbox))
+
+
+
+        self.bbox_checkbox = QCheckBox("Bounding Box",self)
+        self.bbox_checkbox.setChecked(True)
+        self.save_bbox = True
+        self.bbox_checkbox.move(550,300)
+        self.bbox_checkbox.stateChanged.connect(lambda:self.clickbox(self.bbox_checkbox))
+
+
+
         self.button1 = QPushButton("Save", self)
         self.button1.setEnabled(False)
         self.button1.clicked.connect(self.capture_img)
@@ -173,7 +216,8 @@ class App(QWidget):
             # self.flag = False
 
     def button_status(self):
-        if len(self.label_list) > 0:
+        if len(self.label_list) > 0 and (self.save_rgb or self.save_pointcloud
+        or self.save_depth or self.save_bbox or self.save_semantic_label):
             self.button1.setEnabled(True)
             self.button2.setEnabled(True)
         else:
@@ -193,6 +237,36 @@ class App(QWidget):
         self.aig_window.show()
         self.th.pipeline.stop()
         self.hide()
+
+    def clickbox(self,checkbox):
+        if checkbox.text() == "RGB":
+            if checkbox.isChecked() == True:
+                self.save_rgb = True
+            elif checkbox.isChecked() == False:
+                self.save_rgb = False
+        elif checkbox.text() == "Semantic label":
+            if checkbox.isChecked() == True:
+                self.save_semantic_label = True
+            elif checkbox.isChecked() == False:
+                self.save_semantic_label = False
+        elif checkbox.text() == "PointCloud":
+            if checkbox.isChecked() == True:
+                self.save_pointcloud = True
+            elif checkbox.isChecked() == False:
+                self.save_pointcloud = False
+        elif checkbox.text() == "Depth":
+            if checkbox.isChecked() == True:
+                self.save_depth = True
+            elif checkbox.isChecked() == False:
+                self.save_depth = False
+        elif checkbox.text() == "Bounding Box":
+            if checkbox.isChecked() == True:
+                self.save_bbox = True
+            elif checkbox.isChecked() == False:
+                self.save_bbox = False
+        self.button_status()
+
+
 
 
 if __name__ == '__main__':
