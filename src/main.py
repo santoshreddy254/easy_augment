@@ -287,11 +287,11 @@ class MainWindow(QWidget):                           # <===
         elif os.path.exists(self.save_folder.text()+"/captured_data/pointclouds/"):
             rmtree(self.save_folder.text()+"/captured_data/pointclouds/")
             os.makedirs(self.save_folder.text()+"/captured_data/pointclouds/",)
-        if not os.path.exists(self.save_folder.text()+"/captured_data/frame_data/"):
-            os.makedirs(self.save_folder.text()+"/captured_data/frame_data/",)
-        elif os.path.exists(self.save_folder.text()+"/captured_data/frame_data/"):
-            rmtree(self.save_folder.text()+"/captured_data/frame_data/")
-            os.makedirs(self.save_folder.text()+"/captured_data/frame_data/",)
+        if not os.path.exists(self.save_folder.text()+"/captured_data/depth_frames/"):
+            os.makedirs(self.save_folder.text()+"/captured_data/depth_frames/",)
+        elif os.path.exists(self.save_folder.text()+"/captured_data/depth_frames/"):
+            rmtree(self.save_folder.text()+"/captured_data/depth_frames/")
+            os.makedirs(self.save_folder.text()+"/captured_data/depth_frames/",)
 
         generator_options = GeneratorOptions()
         generator_options.set_image_path(self.save_folder.text()+"/captured_data/images/")

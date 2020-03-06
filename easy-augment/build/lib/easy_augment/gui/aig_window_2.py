@@ -10,7 +10,7 @@ from easy_augment.utils.generate_artificial_images import perform_augmentation
 from easy_augment.gui import progress_bar
 from easy_augment.utils.preprocessing import resize_images, rename_images_labels, rename_backgrounds
 from pathlib import Path
-# import easy_augment.launch_tool as main
+import easy_augment.launch_tool
 
 
 class MainWindow(QWidget):                           # <===
@@ -301,10 +301,9 @@ class MainWindow(QWidget):                           # <===
 
         flag = perform_augmentation(self.generator_options)
         if flag:
-            # self.start_gui = main.MainWindow()
-            # self.start_gui.show()
+            self.start_gui = easy_augment.launch_tool.MainWindow()
+            self.start_gui.show()
             self.hide()
-            sys.exit()
 
 
 if __name__ == "__main__":

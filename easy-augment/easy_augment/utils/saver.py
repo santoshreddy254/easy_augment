@@ -39,7 +39,7 @@ def make_save_dirs(generator_options):
             os.makedirs(generator_options.get_overlay_save_path())
 
 
-def save_data(artificial_image, semantic_label, obj_det_label, index, generator_options):
+def save_data(artificial_image, semantic_label, obj_det_label, index,generator_options):
     """
     This function saves the artificial image and its corresponding semantic
     label. Also saves object detection labels, plot preview and segmentation
@@ -74,9 +74,9 @@ def save_data(artificial_image, semantic_label, obj_det_label, index, generator_
                         img_dimension[1])
         [writer.addObject(*l) for l in obj_det_label]
         save_path = os.path.join(
-            generator_options.get_obj_det_save_path(),
-            generator_options.get_name_format() %
-            (index + generator_options.get_start_index()) + '.xml')
+                generator_options.get_obj_det_save_path(),
+                generator_options.get_name_format() %
+                (index + generator_options.get_start_index()) + '.xml')
         writer.save(save_path)
         # with open(os.path.join(
         #         generator_options.obj_det_save_path,
@@ -94,4 +94,4 @@ def save_data(artificial_image, semantic_label, obj_det_label, index, generator_
             generator_options.get_save_label_preview() or
             generator_options.get_save_overlay()):
         save_visuals(artificial_image, semantic_label,
-                     obj_det_label, index, generator_options)
+                     obj_det_label, index,generator_options)

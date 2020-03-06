@@ -22,7 +22,8 @@ colormap = np.asarray([list(reversed(rgb)) for rgb in colormap],
                       dtype=np.uint8)
 
 
-def plot_preview(image, label, obj_det_label, index, generator_options):
+def plot_preview(image, label, obj_det_label, index,generator_options):
+
     """
     This function can be used to plot a preview image,
     which shows the image and labels alongside each other.
@@ -64,8 +65,8 @@ def plot_preview(image, label, obj_det_label, index, generator_options):
         unique_objects = sorted(np.unique(objects_in_image),
                                 key=lambda k: len(k))
         [plt.plot(0, 0, '-', c=np.flip(colormap[
-            CLASS_TO_LABEL[obj]], 0) / 255.,
-            label=obj)
+                                   CLASS_TO_LABEL[obj]], 0) / 255.,
+                  label=obj)
          for obj in unique_objects]
 
         leg = plt.legend(bbox_to_anchor=(0., 1.02, 1., .102),
@@ -83,14 +84,14 @@ def plot_preview(image, label, obj_det_label, index, generator_options):
     plt.yticks([])
 
     save_path = os.path.join(
-        generator_options.preview_save_path,
-        generator_options.name_format %
-        (index + generator_options.start_index) + '.png')
+                    generator_options.preview_save_path,
+                    generator_options.name_format %
+                    (index + generator_options.start_index) + '.png')
     plt.savefig(save_path, bbox_inches="tight")
     plt.close(figure)
 
 
-def save_overlay(image, label, index, generator_options):
+def save_overlay(image, label, index,generator_options):
     """
     This function overlays the segmentation label on the image and
     saves the resultant image.
@@ -113,7 +114,7 @@ def save_overlay(image, label, index, generator_options):
     cv2.imwrite(save_path, image)
 
 
-def save_visuals(image, label, obj_det_label, index, generator_options):
+def save_visuals(image, label, obj_det_label, index,generator_options):
     """
     This function saves the mask if generator option requires
     mask saving. Also calls preview plotting and saving image
@@ -132,7 +133,7 @@ def save_visuals(image, label, obj_det_label, index, generator_options):
             colormap[np.array(label, dtype=np.uint8)])
 
     if generator_options.save_label_preview:
-        plot_preview(image, label, obj_det_label, index, generator_options)
+        plot_preview(image, label, obj_det_label, index,generator_options)
 
     if generator_options.save_overlay:
-        save_overlay(image, label, index, generator_options)
+        save_overlay(image, label, index,generator_options)

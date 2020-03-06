@@ -9,9 +9,9 @@ def readme():
 
 setup(
     name="easy-augment",
-    version="1.0.2",
+    version="1.1.0",
     description="End to end software to capture new objects using RGBD camera  and augment them to get a annotated dataset to train deep nets.",
-    long_description=readme(),
+    long_description=open('README.md').read(),
     long_description_content_type="text/markdown",
     url="https://github.com/santoshreddy254/realsense_augmentor",
     author="Santosh Muthireddy",
