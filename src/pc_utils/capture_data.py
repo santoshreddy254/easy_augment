@@ -47,7 +47,7 @@ def get_object_points(color_frame, depth_frame):
     cloud = pcl.PointCloud(verts)
     # pcl.save(cloud, "init_cld.ply")
     filtered_cloud = do_passthrough_filter(point_cloud=cloud,
-                                           name_axis='z', min_axis=0.0, max_axis=0.6)
+                                           name_axis='z', min_axis=0.0, max_axis=0.8)
     # pcl.save(filtered_cloud, "filt_cld.ply")
     downsampled_cloud = do_voxel_grid_filter(point_cloud=filtered_cloud, LEAF_SIZE=0.004)
 
