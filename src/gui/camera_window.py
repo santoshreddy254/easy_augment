@@ -91,15 +91,16 @@ class App(QWidget):
         self.label.setPixmap(QPixmap.fromImage(image))
 
     @pyqtSlot(np.ndarray)
-    def capture_image(self, full_data):
-        if self.flag:
+    def capture_image(self, full_data ):
+        if self.flag and full_data[2].size > 0 :
+            # print(,"point cloud data")
             self._image_counter[self.label_list.index(str(self.label_box.currentText()))] += 1
             name = str(self.label_box.currentText(
             ))+"_{}.png".format(self._image_counter[self.label_list.index(str(self.label_box.currentText()))])
             annotation_name = str(self.label_box.currentText(
                         ))+"_{}.xml".format(self._image_counter[self.label_list.index(str(self.label_box.currentText()))])
             pointcloud_name = str(self.label_box.currentText(
-                        ))+"_{}.ply".format(self._image_counter[self.label_list.index(str(self.label_box.currentText()))])
+                        ))+"_{}.pcd".format(self._image_counter[self.label_list.index(str(self.label_box.currentText()))])
             frame_name = str(self.label_box.currentText(
                         ))+"_{}".format(self._image_counter[self.label_list.index(str(self.label_box.currentText()))])
 
