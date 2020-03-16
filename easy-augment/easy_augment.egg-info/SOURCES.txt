@@ -17,9 +17,6 @@ easy_augment/gui/gui_main.py
 easy_augment/gui/progress_bar.py
 easy_augment/pc_utils/capture_data.py
 easy_augment/pc_utils/helper.py
-easy_augment/pc_utils/pc_reproject.py
-easy_augment/pc_utils/realsense.py
-easy_augment/pc_utils/realsense_pointcloud.py
 easy_augment/utils/arguments.py
 easy_augment/utils/generate_artificial_images.py
 easy_augment/utils/generate_augmenter_list.py

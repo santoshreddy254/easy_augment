@@ -8,7 +8,7 @@ import os
 from easy_augment.utils.arguments import *
 from easy_augment.utils.generate_artificial_images import perform_augmentation
 import easy_augment.gui.progress_bar
-from easy_augment.utils.preprocessing import resize_images, rename_images_labels, rename_backgrounds
+from utils.preprocessing import resize_images, rename_images_labels, rename_backgrounds
 from pathlib import Path
 from easy_augment.gui import camera_window
 
@@ -54,6 +54,17 @@ class MainWindow(QWidget):                           # <===
         elif os.path.exists(self.save_folder.text()+"/captured_data/labels/"):
             rmtree(self.save_folder.text()+"/captured_data/labels/")
             os.makedirs(self.save_folder.text()+"/captured_data/labels/",)
+
+        if not os.path.exists(self.save_folder.text()+"/captured_data/obj_det_label/"):
+            os.makedirs(self.save_folder.text()+"/captured_data/obj_det_label/",)
+        elif os.path.exists(self.save_folder.text()+"/captured_data/obj_det_label/"):
+            rmtree(self.save_folder.text()+"/captured_data/obj_det_label/")
+            os.makedirs(self.save_folder.text()+"/captured_data/obj_det_label/",)
+        if not os.path.exists(self.save_folder.text()+"/captured_data/pointclouds/"):
+            os.makedirs(self.save_folder.text()+"/captured_data/pointclouds/",)
+        elif os.path.exists(self.save_folder.text()+"/captured_data/pointclouds/"):
+            rmtree(self.save_folder.text()+"/captured_data/pointclouds/")
+            os.makedirs(self.save_folder.text()+"/captured_data/pointclouds/",)
 
         generator_options = GeneratorOptions()
         generator_options.set_image_path(self.save_folder.text()+"/captured_data/images/")

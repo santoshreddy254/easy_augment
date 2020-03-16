@@ -5,6 +5,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from pascal_voc_writer import Writer
+from time import sleep
 import cv2
 from pc_utils import capture_data
 import pyrealsense2 as rs
@@ -14,6 +15,8 @@ import pcl
 import os
 from gui import aig_window_2
 import copy
+import threading
+import time
 
 
 class Thread(QThread):
@@ -38,7 +41,7 @@ class Thread(QThread):
             spatial.set_option(rs.option.holes_fill, 3)
             depth_frame = spatial.process(depth_frame)
             Pixel_Coord, segmented_cloud = capture_data.get_object_points(color_frame, depth_frame)
-            depth_image = np.asanyarray(depth_frame.get_data())
+            depth_image = np.asanyarray(depth_frame.get_data(),np.uint8)
             color_image = np.asanyarray(color_frame.get_data())
             color_image_copy = copy.deepcopy(color_image)
             if len(Pixel_Coord) > 0:
@@ -54,7 +57,7 @@ class Thread(QThread):
                 depth_image, alpha=0.03), cv2.COLORMAP_JET)
             images = np.hstack((color_image_copy, object_mask))
             images_raw = np.hstack((color_image, object_mask))
-            full_data = [images_raw,bbox_coordinates,segmented_cloud,depth_frame]
+            full_data = [images_raw,bbox_coordinates,segmented_cloud,depth_image]
             full_data = np.array(full_data)
 
             rgbImage = cv2.cvtColor(images, cv2.COLOR_BGR2RGB)
@@ -79,6 +82,8 @@ class App(QWidget):
         self.width = 100
         self.height = 100
         self._image_counter = []
+        self.object_counter = 0
+        self.max_objects = 10
         self.generator_options = generator_options
         self.save_folder_path = save_folder_path
         self.initUI()
@@ -89,17 +94,26 @@ class App(QWidget):
         self.label.setPixmap(QPixmap.fromImage(image))
 
     @pyqtSlot(np.ndarray)
-    def capture_image(self, full_data):
-        if self.flag:
+    def capture_image(self, full_data ):
+        if self.flag and full_data[2].size > 0 and self.object_counter<self.max_objects:
+            self.time_stamp = time.time()
+            print("inside save",self.object_counter+1)
+            if self.toggle_switch.text()=="Stop":
+                self.object_counter+=1
+            # else:
+            #     self.toggle_switch.setText("Start")
+            #     self.toggle_switch.setStyleSheet("background-color: green")
+            #     self.flag = False
+            # print(,"point cloud data")
             self._image_counter[self.label_list.index(str(self.label_box.currentText()))] += 1
             name = str(self.label_box.currentText(
-            ))+"_{}.png".format(self._image_counter[self.label_list.index(str(self.label_box.currentText()))])
+            ))+"_{}.png".format(self.time_stamp)
             annotation_name = str(self.label_box.currentText(
-                        ))+"_{}.xml".format(self._image_counter[self.label_list.index(str(self.label_box.currentText()))])
+                        ))+"_{}.xml".format(self.time_stamp)
             pointcloud_name = str(self.label_box.currentText(
-                        ))+"_{}.ply".format(self._image_counter[self.label_list.index(str(self.label_box.currentText()))])
+                        ))+"_{}.pcd".format(self.time_stamp)
             frame_name = str(self.label_box.currentText(
-                        ))+"_{}".format(self._image_counter[self.label_list.index(str(self.label_box.currentText()))])
+                        ))+"_{}".format(self.time_stamp)
 
             rgb_img = full_data[0][:, :640]
             mask_img = full_data[0][:, 640:]
@@ -117,9 +131,17 @@ class App(QWidget):
             if self.save_pointcloud:
                 pcl.save(full_data[2],self.save_folder_path+"/captured_data/pointclouds/"+pointcloud_name)
             if self.save_depth:
-                saver = rs.save_single_frameset(filename=self.save_folder_path+"/captured_data/frame_data/"+frame_name)
-                saver.process(full_data[3])
+                # print(full_data[3].get_frame_number())
+                # adds frame numer at the end of filename yet to solve the issue
+                # saver = rs.save_single_frameset(filename=self.save_folder_path+"/captured_data/depth_frames/"+frame_name)
+                # saver.process(full_data[3])
+                cv2.imwrite(self.save_folder_path+"/captured_data/depth_frames/"+name,full_data[3])
             self.flag = False
+        elif self.object_counter==self.max_objects:
+            # print("inside else loop")
+            self.toggle_switch_status()
+            # self.flag = False
+            # sleep(1)
 
     def initUI(self):
         # capture_data.init_capture_data()
@@ -185,29 +207,91 @@ class App(QWidget):
         self.bbox_checkbox.stateChanged.connect(lambda:self.clickbox(self.bbox_checkbox))
 
 
+        self.timer_interval_label = QLabel("Capture interval in ms",self)
+        self.timer_interval_label.move(100,340)
+        self.timer_interval = QLineEdit(self)
+        self.timer_interval.move(350,340)
+        self.timer_interval.setText(str(1000))
+        self.timer_interval.textChanged.connect(self.change_time_interval)
+        self.onlyInt = QIntValidator()
+        self.timer_interval.setValidator(self.onlyInt)
+
+        self.max_objects_label = QLabel("Max objects per class",self)
+        self.max_objects_label.move(100,370)
+        self.max_objects_field = QLineEdit(self)
+        self.max_objects_field.move(350,370)
+        self.max_objects_field.setText(str(100))
+        self.max_objects_field.textChanged.connect(self.change_max_objects)
+        self.max_objects_field.setValidator(self.onlyInt)
+
+
+        self.toggle_switch_label = QLabel("Start continous mode",self)
+        self.toggle_switch_label.move(100,400)
+        self.toggle_switch = QPushButton("Start",self)
+        self.toggle_switch.setEnabled(False)
+        self.toggle_switch.setStyleSheet("background-color: green")
+        self.toggle_switch.move(350,400)
+        self.toggle_switch.clicked.connect(self.toggle_switch_status)
+
 
         self.button1 = QPushButton("Save", self)
         self.button1.setEnabled(False)
         self.button1.clicked.connect(self.capture_img)
-        self.button1.move(200, 400)
+        self.button1.move(200, 440)
         self.button1.resize(80, 20)
 
         self.button2 = QPushButton("Finish", self)
         self.button2.setEnabled(False)
         self.button2.clicked.connect(self.finish_button)
-        self.button2.move(400, 400)
+        self.button2.move(400, 440)
         self.button2.resize(80, 20)
 
+    def toggle_switch_status(self):
+        if self.toggle_switch.text() == "Start":
+            self.toggle_switch.setText("Stop")
+            self.timer = QTimer(self)
+            self.timer.start(int(self.timer_interval.text()))
+            self.timer.timeout.connect(self.capture_img)
+            self.toggle_switch.setStyleSheet("background-color: red")
+        elif self.toggle_switch.text() == "Stop":
+            self.timer.stop()
+            self.toggle_switch.setText("Start")
+            self.toggle_switch.setStyleSheet("background-color: green")
+            self.object_counter = 0
+        self.button_status()
+    def change_time_interval(self):
+        if self.toggle_switch.text() == "Stop":
+            self.timer.stop()
+            self.object_counter = 0
+            self.toggle_switch.setText("Start")
+            self.toggle_switch.setStyleSheet("background-color: green")
+        self.button_status()
+    def change_max_objects(self):
+        if self.toggle_switch.text() == "Stop":
+            self.timer.stop()
+            self.object_counter = 0
+            self.max_objects = int(self.max_objects_field.text())
+            self.toggle_switch.setText("Start")
+            self.toggle_switch.setStyleSheet("background-color: green")
+        self.button_status()
+
+
+
     def add_labels(self):
+        if self.toggle_switch.text()=="Stop":
+            self.toggle_switch_status()
         text, ok = QInputDialog.getText(self, 'Text Input Dialog', 'Enter your name:')
         self.label_list.append(text)
         self.button_status()
         self.label_box.clear()
-        for i in self.label_list:
+        for i in reversed(self.label_list):
             self.label_box.addItem(i)
         if len(self._image_counter) != len(self.label_list):
             self._image_counter.append(0)
-        print("inside add labels ", self._image_counter)
+        # print("inside add labels ", self._image_counter)
+
+    # def continous_capture(self):
+
 
     def capture_img(self):
         self.flag = True
@@ -215,10 +299,16 @@ class App(QWidget):
             self.th.imagesPixmap.connect(self.capture_image)
             # self.flag = False
 
+
     def button_status(self):
         if len(self.label_list) > 0 and (self.save_rgb or self.save_pointcloud
-        or self.save_depth or self.save_bbox or self.save_semantic_label):
+        or self.save_depth or self.save_bbox or self.save_semantic_label) and self.toggle_switch.text() == "Start":
             self.button1.setEnabled(True)
+            self.button2.setEnabled(True)
+            self.toggle_switch.setEnabled(True)
+        elif len(self.label_list) > 0 and (self.save_rgb or self.save_pointcloud
+        or self.save_depth or self.save_bbox or self.save_semantic_label) and self.toggle_switch.text() == "Stop":
+            self.button1.setEnabled(False)
             self.button2.setEnabled(True)
         else:
             self.button1.setEnabled(False)
@@ -236,6 +326,7 @@ class App(QWidget):
         self.aig_window = aig_window_2.MainWindow(self.generator_options)
         self.aig_window.show()
         self.th.pipeline.stop()
+        # self.th.stop()
         self.hide()
 
     def clickbox(self,checkbox):
