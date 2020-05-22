@@ -38,7 +38,7 @@ class Thread(QThread):
             depth_frame = aligned_frames.get_depth_frame()
             color_frame = aligned_frames.get_color_frame()
             spatial = rs.spatial_filter()
-            spatial.set_option(rs.option.holes_fill, 3)
+            spatial.set_option(rs.option.holes_fill, 1)
             depth_frame = spatial.process(depth_frame)
             Pixel_Coord, segmented_cloud = capture_data.get_object_points(color_frame, depth_frame)
             depth_image = np.asanyarray(depth_frame.get_data(),np.uint8)
@@ -83,7 +83,7 @@ class App(QWidget):
         self.height = 100
         self._image_counter = []
         self.object_counter = 0
-        self.max_objects = 10
+        self.max_objects = 30
         self.generator_options = generator_options
         self.save_folder_path = save_folder_path
         self.initUI()
@@ -95,9 +95,11 @@ class App(QWidget):
 
     @pyqtSlot(np.ndarray)
     def capture_image(self, full_data ):
+        #print(self.max_objects)
+
         if self.flag and full_data[2].size > 0 and self.object_counter<self.max_objects:
             self.time_stamp = time.time()
-            print("inside save",self.object_counter+1)
+            #print("inside save",self.object_counter+1)
             if self.toggle_switch.text()=="Stop":
                 self.object_counter+=1
             # else:
@@ -115,8 +117,8 @@ class App(QWidget):
             frame_name = str(self.label_box.currentText(
                         ))+"_{}".format(self.time_stamp)
 
-            rgb_img = full_data[0][:, :640]
-            mask_img = full_data[0][:, 640:]
+            rgb_img = full_data[0][:, :848]
+            mask_img = full_data[0][:, 848:]
             bbox_coordinates = full_data[1]
             obj_pixels = np.where(mask_img == 255)
             mask_img[obj_pixels] = self.label_list.index(str(self.label_box.currentText()))+1
@@ -220,7 +222,7 @@ class App(QWidget):
         self.max_objects_label.move(100,370)
         self.max_objects_field = QLineEdit(self)
         self.max_objects_field.move(350,370)
-        self.max_objects_field.setText(str(100))
+        self.max_objects_field.setText(str(30))
         self.max_objects_field.textChanged.connect(self.change_max_objects)
         self.max_objects_field.setValidator(self.onlyInt)
 
@@ -270,9 +272,13 @@ class App(QWidget):
         if self.toggle_switch.text() == "Stop":
             self.timer.stop()
             self.object_counter = 0
-            self.max_objects = int(self.max_objects_field.text())
             self.toggle_switch.setText("Start")
             self.toggle_switch.setStyleSheet("background-color: green")
+            self.max_objects = int(self.max_objects_field.text())
+            #print(self.max_objects)
+        else:
+            self.max_objects = int(self.max_objects_field.text())
+            #print(self.max_objects)
         self.button_status()
 
 

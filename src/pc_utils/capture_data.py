@@ -47,7 +47,7 @@ def get_object_points(color_frame, depth_frame):
     cloud = pcl.PointCloud(verts)
     # pcl.save(cloud, "init_cld.ply")
     filtered_cloud = do_passthrough_filter(point_cloud=cloud,
-                                           name_axis='z', min_axis=0.0, max_axis=0.8)
+                                           name_axis='z', min_axis=0.1, max_axis=0.8)
     # pcl.save(filtered_cloud, "filt_cld.ply")
     downsampled_cloud = do_voxel_grid_filter(point_cloud=filtered_cloud, LEAF_SIZE=0.004)
 
@@ -57,7 +57,7 @@ def get_object_points(color_frame, depth_frame):
     # project_inliers.set_model_type(pcl.SACMODEL_NORMAL_PARALLEL_PLANE)
     # plane = project_inliers.filter()
     colorless_cloud = XYZRGB_to_XYZ(objects_cloud)
-    clusters = get_clusters(objects_cloud, tolerance=0.02, min_size=100, max_size=25000)
+    clusters = get_clusters(objects_cloud, tolerance=0.02, min_size=15, max_size=25000)
 
     colored_points = get_cloud_clusters(clusters, colorless_cloud)
     # Create a cloud with each cluster of points having the same color
