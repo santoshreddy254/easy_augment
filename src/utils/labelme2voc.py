@@ -70,14 +70,15 @@ def convert_to_voc(input_dir, output_dir_path, labels_file):
             img = np.asarray(PIL.Image.open(img_file))
             PIL.Image.fromarray(img).save(out_img_file)
 
-            lbl = labelme.utils.shapes_to_label(
+            cls, ins = labelme.utils.shapes_to_label(
                 img_shape=img.shape,
                 shapes=data['shapes'],
                 label_name_to_value=class_name_to_id,
             )
-            labelme.utils.lblsave(out_png_file, lbl)
+            ins[cls == -1] = 0
+            labelme.utils.lblsave(out_png_file, cls)
 
-            np.save(out_lbl_file, lbl)
+            np.save(out_lbl_file, cls)
 
             # viz = labelme.utils.(
             #     lbl, img, class_names, colormap=colormap)
