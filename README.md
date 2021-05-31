@@ -86,7 +86,6 @@ Steps after selecting Have annotations
 ## Contributors
 * Santosh Muthireddy              – https://github.com/santoshreddy254
 * Naresh Kumar Gurulingan         - https://github.com/NareshGuru77
-* Deepan Chakravarthi Padmanabhan - https://github.com/DeepanChakravarthiPadmanabhan
 * M.Sc Deebul Nair                - https://github.com/deebuls
 
 
