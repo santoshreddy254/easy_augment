@@ -26,13 +26,15 @@ class Thread(QThread):
     def run(self):
         self.pipeline, config = capture_data.init_capture_data()
         profile = self.pipeline.start(config)
+        if profile:
+            self.loop_break = True
         depth_sensor = profile.get_device().first_depth_sensor()
         depth_scale = depth_sensor.get_depth_scale()
         clipping_distance_in_meters = 1
         clipping_distance = clipping_distance_in_meters / depth_scale
         align_to = rs.stream.color
         align = rs.align(align_to)
-        while True:
+        while self.loop_break:
             frames = self.pipeline.wait_for_frames()
             aligned_frames = align.process(frames)
             depth_frame = aligned_frames.get_depth_frame()
@@ -68,6 +70,9 @@ class Thread(QThread):
             p = convertToQtFormat.scaled(640, 240, Qt.KeepAspectRatio)
             self.changePixmap.emit(p)
             self.imagesPixmap.emit(full_data)
+    def stop(self):
+        self.loop_break = False
+        # self.terminate()
 
 
 class App(QWidget):
@@ -315,6 +320,7 @@ class App(QWidget):
             self.button2.setEnabled(False)
 
     def finish_button(self):
+        # self.th.pipeline.stop()
         file1 = open(self.save_folder_path+"/captured_data/labels.txt", "w")
         file1.write("__ignore__ \n_background_\n")
         for i in self.label_list:
@@ -325,8 +331,8 @@ class App(QWidget):
         self.generator_options.set_max_objects(len(self.label_list))
         self.aig_window = aig_window_2.MainWindow(self.generator_options)
         self.aig_window.show()
-        self.th.pipeline.stop()
-        # self.th.stop()
+        # self.th.pipeline.stop()
+        self.th.stop()
         self.hide()
 
     def clickbox(self,checkbox):
